@@ -1,10 +1,11 @@
-const CACHE_NAME = 'meuapp-ulfs-v1';
+const CACHE_NAME = 'meuapp-ulfs-v2';
 
 const ASSETS = [
   './',
   './index.html',
-  './manifest.webmanifest'
-  // Se quiser, adicione outros arquivos estáticos aqui.
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -21,7 +22,6 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// network-first para HTML; cache-first para estáticos
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const accept = req.headers.get('accept') || '';
