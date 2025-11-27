@@ -8,7 +8,15 @@
 <!-- PWA: tema, manifest e favicon -->
 <meta name="theme-color" content="#0d6efd" />
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%230d6efd'/%3E%3Ctext x='50%25' y='57%25' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='140' fill='white'%3EM%3C/text%3E%3C/svg%3E" />
+
+<!-- Favicon (SVG embutido) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%230d6efd'/%3E%3Ctext x='50%25' y='57%25' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='140' fill='white'%3EULF%3C/text%3E%3C/svg%3E" />
+<link rel="alternate icon" sizes="32x32" href="./icons/icon-32.png" />
+<link rel="alternate icon" sizes="192x192" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" href="./icons/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Calculadora ULFs" />
 
 <style>
   :root{
@@ -24,7 +32,6 @@
   header h1{margin:0; font-size:clamp(20px,4vw,28px)}
   header p{margin:6px 0 0; color:var(--muted); font-size:14px}
 
-  /* Container do botão de instalar/baixar */
   .install-bar{
     max-width:980px; margin:0 auto; padding:0 16px 10px;
     display:flex; justify-content:flex-end;
@@ -86,7 +93,6 @@
     <p>1 ULF = R$ 13,53 • Coeficientes conforme o contrato “Contrato - 4600012975-34-37.pdf”.</p>
   </header>
 
-  <!-- Botão Baixar/Instalar -->
   <div class="install-bar">
     <button id="btnInstallSite" class="btn-install" title="Instalar como app ou abrir a página">
       Baixar/Instalar
@@ -122,7 +128,6 @@
           <div class="muted" style="margin-top:6px">Ao escolher um código SAP, a atividade e o tipo (Normal/HE) são preenchidos automaticamente.</div>
         </div>
 
-        <!-- Seletor de Tipo oculto; o tipo é controlado automaticamente -->
         <div class="inline" style="display:none">
           <div>
             <label for="tipo">Tipo</label>
@@ -135,7 +140,6 @@
             <span class="badge" id="coefBadge">Coef.: —</span>
           </div>
         </div>
-        <!-- Badge visível -->
         <div>
           <span class="badge" id="tipoBadgeVisivel">Tipo: Normal</span>
           <span class="badge" id="coefBadgeVisivel" style="margin-left:8px">Coef.: —</span>
@@ -189,7 +193,6 @@
 (function(){
   const ULF_VALUE = 13.53; // R$
 
-  // Atividades conforme contrato
   const atividades = [
     {id:1, nome:"Roçada (m²) Densidade 01 (Cerrado)", unit:"m²", desc:"Remoção de vegetação baixa; inclui poda de galhos que invadam a faixa."},
     {id:2, nome:"Roçada (m²) Densidade 02 (Vegetação Adensada)", unit:"m²", desc:"Vegetação até 10 cm de diâmetro; pode exigir foice/facão/motorroçadeira."},
@@ -214,7 +217,6 @@
     {id:21, nome:"Limpeza de pátio de Subestação (m²)", unit:"m²", desc:"Limpeza de pátio/instalações; inclui recolhimento e destinação final."}
   ];
 
-  // Coeficientes Normal/HE (ULF por unidade)
   const coeficientes = {
     1:{Normal:0.021, HE:0.029},
     2:{Normal:0.030, HE:0.042},
@@ -239,7 +241,6 @@
     21:{Normal:0.022, HE:0.030}
   };
 
-  // Mapa SAP
   const sapMap = [
     {sap:"651546", atividadeId:1, tipo:"Normal"},
     {sap:"653733", atividadeId:1, tipo:"HE"},
@@ -284,7 +285,6 @@
     {sap:"653748", atividadeId:21, tipo:"HE"},
   ];
 
-  // Preenche selects
   const selAtv = document.getElementById('atividade');
   atividades.forEach((a)=>{
     const opt = document.createElement('option');
@@ -321,17 +321,14 @@
   function fmtMoney(n){
     return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   }
-
   function getCoef(atvId, tipo){
     const c = coeficientes[atvId] || {Normal:0, HE:0};
     return (tipo === 'HE') ? c.HE : c.Normal;
   }
-
   function setTipo(newTipo){
     tipoAtual = newTipo === 'HE' ? 'HE' : 'Normal';
     tipoBadgeVisivel.textContent = `Tipo: ${tipoAtual}`;
   }
-
   function refreshInfo(){
     const atvId = +selAtv.value;
     const a = atividades.find(x=>x.id===atvId);
@@ -447,22 +444,25 @@
 <!-- PWA: instalar e registrar Service Worker -->
 <script>
 (function(){
-  const SITE_URL = 'https://luiz-star.github.io/Calculadora-ULF-ARMAF/';
+  const SITE_URL = location.origin + location.pathname; // abre a mesma página
   let deferredPrompt = null;
 
-  // Captura o prompt de instalação (Chrome/Edge)
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
   });
 
-  // Botão manual
   document.getElementById('btnInstallSite')?.addEventListener('click', async () => {
     try {
       if (deferredPrompt) {
         deferredPrompt.prompt();
         await deferredPrompt.userChoice;
         deferredPrompt = null;
+        return;
+      }
+      // iOS não exibe prompt: instrução simples
+      if (navigator.userAgent.match(/iPhone|iPad|iPod/)) {
+        alert('No iPhone/iPad: Toque em Compartilhar > Adicionar à Tela de Início.');
         return;
       }
       window.open(SITE_URL, '_blank');
@@ -472,7 +472,6 @@
     }
   });
 
-  // Registrar Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./service-worker.js')
