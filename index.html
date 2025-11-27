@@ -32,8 +32,6 @@
   header h1{margin:0; font-size:clamp(20px,4vw,28px)}
   header p{margin:6px 0 0; color:var(--muted); font-size:14px}
 
-  /* Removida a barra/botão de instalação */
-
   .wrap{max-width:980px; margin:0 auto; padding:16px}
   .card{
     background:rgba(17,24,39,0.75); border:1px solid rgba(148,163,184,0.15);
@@ -64,7 +62,7 @@
   .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
   button{
     padding:10px 14px; border-radius:10px; border:1px solid rgba(148,163,184,0.25);
-    background:#0b1223; color:var(--txt); cursor:pointer
+    background:#0b1223; color:#e5e7eb; cursor:pointer
   }
   button.primary{background:linear-gradient(180deg,#16a34a,#059669); border:none}
   .table{
@@ -83,6 +81,12 @@
 <body>
   <header>
     <h1>Calculadora de ULFs</h1>
+    <p class="muted" style="margin-top:10px">
+      Como usar: abra este endereço no navegador do seu celular ou computador:
+      <a href="https://luiz-star.github.io/Calculadora-ULF-ARMAF/" target="_blank" rel="noopener">
+        https://luiz-star.github.io/Calculadora-ULF-ARMAF/
+      </a>. Basta tocar/clicar no link acima e a calculadora abrirá automaticamente.
+    </p>
     <p>1 ULF = R$ 13,53 • Coeficientes conforme o contrato “Contrato - 4600012975-34-37.pdf”.</p>
   </header>
 
@@ -428,8 +432,7 @@
 })();
 </script>
 
-<!-- Opcional: manter o registro do Service Worker para funcionamento offline.
-     Não há botão de instalar; isto só ajuda em cache e desempenho. -->
+<!-- Registro do Service Worker para cache/offline (opcional, sem botão de instalar) -->
 <script>
 (function(){
   if ('serviceWorker' in navigator) {
