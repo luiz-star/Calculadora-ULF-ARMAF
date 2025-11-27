@@ -3,12 +3,20 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MeuApp — Calculadora de ULFs</title>
+<title>Calculadora de ULFs - Celesc</title>
 
-<!-- PWA -->
+<!-- PWA básico: tema, manifest e favicon (pode manter mesmo sem botão de instalar) -->
 <meta name="theme-color" content="#0d6efd" />
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%230d6efd'/%3E%3Ctext x='50%25' y='57%25' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='140' fill='white'%3EM%3C/text%3E%3C/svg%3E" />
+
+<!-- Favicon (SVG embutido) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%230d6efd'/%3E%3Ctext x='50%25' y='57%25' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='140' fill='white'%3EULF%3C/text%3E%3C/svg%3E" />
+<link rel="alternate icon" sizes="32x32" href="./icons/icon-32.png" />
+<link rel="alternate icon" sizes="192x192" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" href="./icons/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Calculadora ULFs" />
 
 <style>
   :root{
@@ -23,6 +31,9 @@
   header{padding:20px 16px; text-align:center}
   header h1{margin:0; font-size:clamp(20px,4vw,28px)}
   header p{margin:6px 0 0; color:var(--muted); font-size:14px}
+
+  /* Removida a barra/botão de instalação */
+
   .wrap{max-width:980px; margin:0 auto; padding:16px}
   .card{
     background:rgba(17,24,39,0.75); border:1px solid rgba(148,163,184,0.15);
@@ -67,25 +78,9 @@
   .inline{display:flex; gap:10px; align-items:center}
   .inline > *{flex:1}
   .badge{display:inline-block; padding:2px 8px; border-radius:999px; background:#0b1223; border:1px solid rgba(148,163,184,0.3); font-size:12px; color:#cbd5e1}
-
-  /* PWA UI: botão instalar e dica */
-  .topbar {
-    max-width:980px; margin:0 auto; padding:0 16px 8px; display:flex; justify-content:flex-end;
-  }
-  .btn-install { background:#0d6efd; border:none; color:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; display:none }
-  .install-hint{
-    display:none; max-width:980px; margin:0 auto; padding:8px 12px; color:#084298;
-    background:#e7f1ff; border:1px dashed #cfe2ff; border-radius:10px;
-  }
-  .install-hint.show{display:block}
 </style>
 </head>
 <body>
-  <div class="topbar">
-    <button id="btnInstall" class="btn-install">Instalar</button>
-  </div>
-  <div id="installHint" class="install-hint">Para instalar: no Android toque ⋮ → Instalar. No iPhone: Compartilhar → Adicionar à Tela de Início.</div>
-
   <header>
     <h1>Calculadora de ULFs</h1>
     <p>1 ULF = R$ 13,53 • Coeficientes conforme o contrato “Contrato - 4600012975-34-37.pdf”.</p>
@@ -182,7 +177,6 @@
   </div>
 
 <script>
-// ===== Seu app (inalterado, apenas encapsulado) =====
 (function(){
   const ULF_VALUE = 13.53; // R$
 
@@ -278,7 +272,6 @@
     {sap:"653748", atividadeId:21, tipo:"HE"},
   ];
 
-  // Preenche selects
   const selAtv = document.getElementById('atividade');
   atividades.forEach((a)=>{
     const opt = document.createElement('option');
@@ -315,17 +308,14 @@
   function fmtMoney(n){
     return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   }
-
   function getCoef(atvId, tipo){
     const c = coeficientes[atvId] || {Normal:0, HE:0};
     return (tipo === 'HE') ? c.HE : c.Normal;
   }
-
   function setTipo(newTipo){
     tipoAtual = newTipo === 'HE' ? 'HE' : 'Normal';
     tipoBadgeVisivel.textContent = `Tipo: ${tipoAtual}`;
   }
-
   function refreshInfo(){
     const atvId = +selAtv.value;
     const a = atividades.find(x=>x.id===atvId);
@@ -438,40 +428,18 @@
 })();
 </script>
 
+<!-- Opcional: manter o registro do Service Worker para funcionamento offline.
+     Não há botão de instalar; isto só ajuda em cache e desempenho. -->
 <script>
-// ===== PWA: botão instalar + registro do Service Worker =====
-let deferredPrompt;
-const btnInstall = document.getElementById('btnInstall');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  btnInstall.style.display = 'inline-block';
-  document.getElementById('installHint').classList.remove('show');
-});
-
-btnInstall?.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  btnInstall.style.display = 'none';
-});
-
-setTimeout(()=> {
-  if (!window.matchMedia('(display-mode: standalone)').matches) {
-    document.getElementById('installHint').classList.add('show');
+(function(){
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('SW registrado:', reg.scope))
+        .catch(err => console.error('Erro ao registrar SW:', err));
+    });
   }
-}, 1500);
-
-// Registrar SW
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg => console.log('SW registrado:', reg.scope))
-      .catch(err => console.error('Erro SW:', err));
-  });
-}
+})();
 </script>
 </body>
 </html>
