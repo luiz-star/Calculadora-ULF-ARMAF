@@ -34,7 +34,7 @@
 
   .install-bar{
     max-width:980px; margin:0 auto; padding:0 16px 10px;
-    display:flex; justify-content:flex-end;
+    display:flex; justify-content:flex-end; align-items:center; gap:8px;
   }
   .btn-install{
     background:#0d6efd; color:#fff; border:none; border-radius:10px;
@@ -94,9 +94,10 @@
   </header>
 
   <div class="install-bar">
-    <button id="btnInstallSite" class="btn-install" title="Instalar como app ou abrir a página">
-      Baixar/Instalar
+    <button id="btnInstallSite" class="btn-install" title="Instalar como app">
+      Instalar app
     </button>
+    <span id="installHint" class="muted"></span>
   </div>
 
   <div class="wrap">
@@ -444,31 +445,75 @@
 <!-- PWA: instalar e registrar Service Worker -->
 <script>
 (function(){
-  const SITE_URL = location.origin + location.pathname; // abre a mesma página
   let deferredPrompt = null;
+  const btn = document.getElementById('btnInstallSite');
+  const hint = document.getElementById('installHint');
+
+  function isIOS(){
+    return /iPhone|iPad|iPod/.test(navigator.userAgent);
+  }
+  function isStandalone(){
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+           || window.navigator.standalone === true;
+  }
+
+  function updateHint(){
+    if (!hint || !btn) return;
+    if (isStandalone()){
+      hint.textContent = 'App instalado.';
+      btn.style.display = 'none';
+      return;
+    }
+    if (isIOS()){
+      hint.textContent = 'No iOS: toque em Compartilhar e depois “Adicionar à Tela de Início”.';
+      btn.style.display = 'none'; // iOS não suporta prompt
+      return;
+    }
+    if (!deferredPrompt){
+      hint.textContent = 'Instalação indisponível no momento. Acesse via HTTPS, mantenha o site aberto alguns segundos e tente novamente.';
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      return;
+    }
+    hint.textContent = 'Você pode instalar este app.';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.display = '';
+  }
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    updateHint();
   });
 
-  document.getElementById('btnInstallSite')?.addEventListener('click', async () => {
-    try {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        return;
-      }
-      // iOS não exibe prompt: instrução simples
-      if (navigator.userAgent.match(/iPhone|iPad|iPod/)) {
-        alert('No iPhone/iPad: Toque em Compartilhar > Adicionar à Tela de Início.');
-        return;
-      }
-      window.open(SITE_URL, '_blank');
-    } catch (err) {
-      console.error(err);
-      window.open(SITE_URL, '_blank');
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    updateHint();
+  });
+
+  document.addEventListener('visibilitychange', ()=> {
+    if (document.visibilityState === 'visible') updateHint();
+  });
+
+  btn?.addEventListener('click', async (ev) => {
+    ev.preventDefault();
+    if (isIOS()){
+      alert('No iPhone/iPad: toque em Compartilhar > Adicionar à Tela de Início.');
+      return;
+    }
+    if (!deferredPrompt){
+      alert('Instalação indisponível agora. Certifique-se de acessar via HTTPS (ou localhost) e que o Service Worker esteja ativo.');
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    updateHint();
+    if (outcome === 'accepted'){
+      console.log('Usuário aceitou instalar.');
+    } else {
+      console.log('Usuário cancelou a instalação.');
     }
   });
 
@@ -479,6 +524,8 @@
         .catch(err => console.error('Erro ao registrar SW:', err));
     });
   }
+
+  updateHint();
 })();
 </script>
 </body>
