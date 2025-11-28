@@ -49,7 +49,7 @@
   .hero img{
     display:block;
     width:100%;
-    height: clamp(140px, 28vw, 220px); /* ajuste fino do espaço ocupado */
+    height: clamp(140px, 28vw, 220px);
     object-fit: cover;
   }
   .hero .caption{
@@ -87,6 +87,8 @@
     background:#0b1223; color:#e5e7eb; cursor:pointer
   }
   button.primary{background:linear-gradient(180deg,#16a34a,#059669); border:none}
+  /* Botão laranja para download */
+  .btn-orange{background:#f97316; border:none; color:#1b1007; font-weight:600}
   .table{
     margin-top:18px; overflow:auto; border-radius:12px; border:1px solid rgba(148,163,184,0.2)
   }
@@ -178,6 +180,8 @@
       <div class="actions">
         <button class="primary" id="adicionar">Adicionar à lista</button>
         <button id="limpar">Limpar lista</button>
+        <!-- Novo botão laranja -->
+        <button id="baixar" class="btn-orange">Baixar lista</button>
       </div>
 
       <div class="result">
@@ -470,6 +474,62 @@
       render();
     }
   });
+
+  // ============== NOVO: Download da lista em CSV ==============
+  document.getElementById('baixar').addEventListener('click', ()=>{
+    if (!itens.length){
+      alert('A lista está vazia.');
+      return;
+    }
+    const csv = buildCsv(itens);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lista-ulf-${timestamp()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
+  });
+
+  function buildCsv(rows){
+    const head = ['#','Atividade','Código SAP','Tipo','Qtd.','Unid.','Coef. (ULF/Unid.)','ULF','R$'];
+    const out = [head.join(';')];
+    rows.forEach((it, idx) => {
+      out.push([
+        String(idx+1),
+        csvSanitize(it.nome),
+        csvSanitize(it.sap||''),
+        csvSanitize(it.tipo),
+        formatDecimalPt(it.qtd, 2),
+        csvSanitize(it.unit),
+        formatDecimalPt(it.coef, 4),
+        formatDecimalPt(it.ulf, 4),
+        formatDecimalPt(it.valor, 2)
+      ].join(';'));
+    });
+    const totalUlf = rows.reduce((s,r)=>s+r.ulf,0);
+    const totalBrl = rows.reduce((s,r)=>s+r.valor,0);
+    out.push('');
+    out.push(['Totais','','','','','','',formatDecimalPt(totalUlf,4),formatDecimalPt(totalBrl,2)].join(';'));
+    return '\uFEFF' + out.join('\n'); // BOM para compatibilidade com Excel
+  }
+  function csvSanitize(s){
+    const str = String(s ?? '');
+    return /[;\n"]/g.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
+  }
+  function formatDecimalPt(num, frac){
+    const n = Number(num || 0);
+    const opts = { minimumFractionDigits: frac, maximumFractionDigits: frac };
+    return n.toLocaleString('pt-BR', opts);
+  }
+  function timestamp(){
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
+  }
+  // =============================================================
 
 })();
 </script>
