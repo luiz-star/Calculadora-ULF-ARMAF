@@ -88,7 +88,10 @@
   }
   button.primary{background:linear-gradient(180deg,#16a34a,#059669); border:none}
   /* Botão laranja para download */
-  .btn-orange{background:#f97316; border:none; color:#1b1007; font-weight:600}
+  .btn-orange{
+    background:#f97316; border:none; color:#1b1007; font-weight:600
+  }
+  .btn-orange:hover{filter:brightness(1.05)}
   .table{
     margin-top:18px; overflow:auto; border-radius:12px; border:1px solid rgba(148,163,184,0.2)
   }
@@ -124,7 +127,6 @@
   <div class="wrap">
     <div class="card">
 
-      <!-- Imagem adicionada usando seu link do GitHub -->
       <figure class="hero">
         <img
           src="https://github.com/user-attachments/assets/69f3ecc1-cc84-437f-9211-013cea360240"
@@ -180,7 +182,6 @@
       <div class="actions">
         <button class="primary" id="adicionar">Adicionar à lista</button>
         <button id="limpar">Limpar lista</button>
-        <!-- Novo botão laranja -->
         <button id="baixar" class="btn-orange">Baixar lista</button>
       </div>
 
@@ -475,7 +476,7 @@
     }
   });
 
-  // ============== NOVO: Download da lista em CSV ==============
+  // Botão "Baixar lista" — exporta CSV
   document.getElementById('baixar').addEventListener('click', ()=>{
     if (!itens.length){
       alert('A lista está vazia.');
@@ -513,7 +514,7 @@
     const totalBrl = rows.reduce((s,r)=>s+r.valor,0);
     out.push('');
     out.push(['Totais','','','','','','',formatDecimalPt(totalUlf,4),formatDecimalPt(totalBrl,2)].join(';'));
-    return '\uFEFF' + out.join('\n'); // BOM para compatibilidade com Excel
+    return '\uFEFF' + out.join('\n'); // BOM para Excel
   }
   function csvSanitize(s){
     const str = String(s ?? '');
@@ -529,7 +530,6 @@
     const pad = n => String(n).padStart(2,'0');
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
   }
-  // =============================================================
 
 })();
 </script>
