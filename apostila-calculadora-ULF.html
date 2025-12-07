@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apostila — Calculadora de ULFs</title>
+  <style>
+    :root{
+      --brand:#0b6efd;
+      --brand-dark:#0a58ca;
+      --ink:#0b1220;
+      --muted:#4a5663;
+      --bg:#ffffff;
+      --paper:#eef2f7;
+      --border:#d6d9df;
+      --accent:#06b6d4;
+      --warning:#f59e0b;
+      --success:#16a34a;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji",sans-serif;line-height:1.5}
+    @page{ size:A4; margin:18mm 15mm 18mm 15mm; }
+    .wrap{ max-width:900px; margin:0 auto; background:var(--bg); box-shadow:0 8px 30px rgba(0,0,0,.06); }
+    header.cover{
+      min-height:92vh; padding:48px 28px 28px; display:flex; flex-direction:column; justify-content:space-between;
+      background:linear-gradient(145deg,#0b6efd 0%, #1e3a8a 40%, #111827 100%); color:#fff; position:relative; overflow:hidden;
+    }
+    .cover::after{
+      content:""; position:absolute; inset:-40% -10% auto -10%; height:80%;
+      background:radial-gradient(60% 60% at 70% 10%, rgba(255,255,255,.25), transparent 60%), radial-gradient(50% 50% at 20% 40%, rgba(45,212,191,.18), transparent 60%);
+      filter:blur(8px); pointer-events:none;
+    }
+    .brand-badge{
+      display:inline-flex; align-items:center; gap:10px; background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.25); color:#eaf2ff; padding:10px 14px; border-radius:999px; width:max-content; backdrop-filter: blur(6px);
+    }
+    .brand-dot{ width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px rgba(45,212,191,.18) }
+    .cover h1{ font-size:clamp(28px,6vw,48px); line-height:1.1; margin:18px 0 8px }
+    .subtitle{ font-size:clamp(16px,3.6vw,20px); color:#dbe7ff; max-width:32ch; margin:0 0 18px }
+    .meta{ display:flex; flex-wrap:wrap; gap:12px; color:#e6f0ff; font-size:14px }
+    .meta .chip{ border:1px solid rgba(255,255,255,.3); padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06) }
+    .cover-footer{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-top:24px }
+    .credit{ font-size:14px; color:#e6f0ff }
+    .btn-print{ appearance:none; border:0; border-radius:10px; padding:12px 16px; font-weight:600; background:#fff; color:#0b0f19; box-shadow:0 6px 18px rgba(0,0,0,.15); cursor:pointer }
+    .btn-print:hover{ transform:translateY(-1px) }
+    nav.toc{ padding:24px 22px; background:var(--bg); border-top:1px solid var(--border); border-bottom:1px solid var(--border) }
+    .toc h2{ margin:0 0 12px; font-size:20px }
+    .toc-list{ list-style:none; margin:0; padding:0; columns: 1 }
+    .toc-list li{ display:flex; gap:12px; align-items:baseline; border-bottom:1px dashed #e3e6ee; padding:10px 0 }
+    .toc-list a{ color:var(--ink); text-decoration:none; flex:1 }
+    .toc-list .page{ color:var(--muted); font-variant-numeric:tabular-nums }
+    main{ padding:28px 22px 60px }
+    section{ margin:28px 0; padding:0 }
+    section h2{ font-size:22px; margin:0 0 8px; padding-top:10px }
+    section .lead{ color:var(--muted); margin:0 0 10px }
+    .card{ border:1px solid var(--border); border-radius:12px; padding:16px; background:#fff }
+    .grid{ display:grid; gap:14px }
+    @media (min-width:800px){ .grid.two{grid-template-columns:1fr 1fr} .grid.three{grid-template-columns:repeat(3,1fr)} .toc .toc-list{columns:2} }
+    ul,ol{ padding-left:18px; margin:8px 0 }
+    code.kbd{ background:#f1f5f9; padding:.15rem .45rem; border-radius:6px; border:1px solid #e2e8f0; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace }
+    .badge{ display:inline-block; border:1px solid var(--border); border-radius:999px; padding:4px 10px; background:#f8fafc; font-size:13px; color:#0b1220 }
+    .note{ border-left:4px solid var(--brand); padding:10px 12px; background:#e8f2ff; border-radius:8px; margin:10px 0 }
+    .warn{ border-left:4px solid var(--warning); background:#fff2e0 }
+    .ok{ border-left:4px solid var(--success); background:#e4ffe9 }
+    .totals{ display:flex; flex-wrap:wrap; gap:8px }
+    .totals .pill{ background:#0b6efd1a; border:1px solid #9bbdff; border-radius:999px; padding:8px 12px; font-weight:600 }
+    footer{ padding:28px 22px; color:#34404d; border-top:1px solid var(--border); background:#fbfcff }
+    .sec{ counter-increment:sec }
+    .sec > h2::before{ content: counter(sec) ". "; color:#0b6efd }
+    body{ counter-reset:sec }
+    a.anchor{ text-decoration:none; color:inherit; position:relative }
+
+    /* Ícones inline */
+    .inline-icons li{ display:flex; gap:8px; align-items:flex-start }
+    .inline-icons li span.i{ width:1.25em; text-align:center; flex:0 0 1.25em }
+
+    /* Seções com paleta viva e mais escura */
+    .section-colored{ border-radius:14px; padding:18px; border:1px solid rgba(0,0,0,.06) }
+    /* Tons mais escuros (vivos) */
+    .bg-1{  background:#cddbff } /* azul forte */
+    .bg-2{  background:#c8ffe3 } /* verde forte */
+    .bg-3{  background:#ffd9b8 } /* laranja forte */
+    .bg-4{  background:#e2c6ff } /* roxo forte */
+    .bg-5{  background:#c9fff3 } /* ciano/água forte */
+    .bg-6{  background:#ffc9d8 } /* rosa forte */
+    .bg-7{  background:#d2dcff } /* índigo forte */
+    .bg-8{  background:#cfffcc } /* menta forte */
+    .bg-9{  background:#ffe6a6 } /* amarelo forte */
+    .bg-10{ background:#ccffbf } /* lima/oliva forte */
+
+    /* Cartões e notas: alto contraste sobre fundos escuros */
+    section.section-colored .card{ background:#ffffff; box-shadow:0 1px 0 rgba(0,0,0,.04) }
+    section.section-colored .note{ background:rgba(255,255,255,.92) }
+
+    @media print{
+      .wrap{box-shadow:none}
+      .btn-print{display:none}
+      header.cover{ -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; min-height:auto; height:100vh; }
+      nav.toc{page-break-after:always}
+      section{page-break-inside:avoid}
+      a[href]:after{content:""}
+      /* Mantém cores na impressão. Para economizar tinta, troque para background:#fff. */
+      section.section-colored{ -webkit-print-color-adjust:exact; print-color-adjust:exact }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- CAPA -->
+    <header class="cover" id="capa" role="banner" aria-label="Capa da apostila">
+      <div>
+        <span class="brand-badge" aria-label="Identificação do projeto">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <strong>Projeto</strong> · Calculadora de ULFs
+        </span>
+        <h1>Apostila de Uso e Operação <span aria-hidden="true">📝</span></h1>
+        <p class="subtitle">Guia prático para cálculo de ULF, montagem de listas, exportação em CSV e boas práticas de medição e orçamento <span aria-hidden="true">💡</span></p>
+        <div class="meta" aria-label="Metadados">
+          <span class="chip">Versão 1.0</span>
+          <span class="chip">Atualizado: 03/12/2025</span>
+          <span class="chip">Público: Gestores, Encarregados, Campo, Administrativo</span>
+        </div>
+      </div>
+      <div class="cover-footer">
+        <p class="credit">
+          Produced by <a href="https://www.startrainings.net/" target="_blank" rel="noopener" style="color:#bfe6ff">https://www.startrainings.net/</a>
+        </p>
+        <button class="btn-print" onclick="window.print()" title="Imprimir ou salvar em PDF">Imprimir / Salvar PDF</button>
+      </div>
+    </header>
+
+    <!-- SUMÁRIO -->
+    <nav class="toc" aria-label="Sumário" id="sumario">
+      <h2>Sumário <span aria-hidden="true">📎</span></h2>
+      <ol class="toc-list">
+        <li><a href="#visao-geral">1. Visão geral</a><span class="page">p. 1</span></li>
+        <li><a href="#funcionalidades">2. Funcionalidades principais</a><span class="page">p. 2</span></li>
+        <li><a href="#como-usar">3. Como usar passo a passo</a><span class="page">p. 3</span></li>
+        <li><a href="#regras-calculo">4. Mapeamento de dados e regras de cálculo</a><span class="page">p. 4</span></li>
+        <li><a href="#interface">5. Estrutura da interface</a><span class="page">p. 5</span></li>
+        <li><a href="#csv">6. Exportação CSV</a><span class="page">p. 6</span></li>
+        <li><a href="#casos-uso">7. Casos de uso típicos</a><span class="page">p. 7</span></li>
+        <li><a href="#erros-comuns">8. Erros comuns e como evitar</a><span class="page">p. 8</span></li>
+        <li><a href="#manutencao">9. Manutenção e personalizações</a><span class="page">p. 9</span></li>
+        <li><a href="#seguranca">10. Segurança e desempenho</a><span class="page">p. 10</span></li>
+        <li><a href="#faq">11. Perguntas frequentes (FAQ)</a><span class="page">p. 11</span></li>
+        <li><a href="#boas-praticas">12. Boas práticas operacionais</a><span class="page">p. 12</span></li>
+        <li><a href="#roadmap">13. Roadmap sugerido</a><span class="page">p. 13</span></li>
+        <li><a href="#contato">14. Contato</a><span class="page">p. 14</span></li>
+      </ol>
+      <div class="note" role="note">
+        <span aria-hidden="true">💡</span> Dica: Para salvar em PDF, clique em “Imprimir / Salvar PDF” e selecione “Salvar como PDF”. Em Mais configurações, ative “Cabeçalhos e rodapés” se desejar números de página automáticos.
+      </div>
+    </nav>
+
+    <!-- CONTEÚDO -->
+    <main role="main">
+      <section id="visao-geral" class="sec section-colored bg-1">
+        <h2><a class="anchor" href="#visao-geral">Visão geral</a></h2>
+        <p class="lead">Objetivo, público-alvo e benefícios do uso da Calculadora de ULFs.</p>
+        <div class="card grid two">
+          <div>
+            <h3>Objetivo <span aria-hidden="true">🎯</span></h3>
+            <p>Auxiliar equipes a calcular ULFs e o valor total em R$ a partir de atividades padronizadas, coeficientes por tipo (Normal/HE) e códigos SAP.</p>
+            <div class="totals">
+              <span class="pill">ULF → custo direto <span aria-hidden="true">→</span></span>
+              <span class="pill">Normal × HE <span aria-hidden="true">±</span></span>
+              <span class="pill">Integração CSV <span aria-hidden="true">➡️</span></span>
+            </div>
+          </div>
+          <div>
+            <h3>Público-alvo <span aria-hidden="true">👥</span></h3>
+            <ul class="inline-icons">
+              <li><span class="i">✅</span>Gestores e encarregados</li>
+              <li><span class="i">✅</span>Equipes de campo</li>
+              <li><span class="i">✅</span>Administrativo (medições, orçamento)</li>
+            </ul>
+            <h3>Principais benefícios <span aria-hidden="true">💡</span></h3>
+            <ul class="inline-icons">
+              <li><span class="i">✔️</span>Padronização dos cálculos e redução de erros</li>
+              <li><span class="i">✔️</span>Agilidade na montagem de planilhas</li>
+              <li><span class="i">✔️</span>Exportação compatível com Excel/ERP</li>
+              <li><span class="i">✔️</span>Consulta por atividade ou código SAP</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="funcionalidades" class="sec section-colored bg-2">
+        <h2><a class="anchor" href="#funcionalidades">Funcionalidades principais</a></h2>
+        <div class="grid three">
+          <div class="card">
+            <h3>Seleção de atividade <span aria-hidden="true">📝</span></h3>
+            <ul>
+              <li>Lista curada com atividades típicas (roçada, corte, aceiro, etc.)</li>
+              <li>Unidade de medida por atividade (m², un) <span aria-hidden="true">⌀</span></li>
+              <li>Coeficientes para Normal e HE <span aria-hidden="true">±</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Integração com SAP <span aria-hidden="true">↗️</span></h3>
+            <ul>
+              <li>Campo para digitar ou selecionar o código SAP</li>
+              <li>Preenchimento automático de atividade e tipo <span aria-hidden="true">→</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Lista e totais <span aria-hidden="true">∑</span></h3>
+            <ul>
+              <li>Adicionar itens com Atividade, SAP, Tipo, Qtd, ULF e R$</li>
+              <li>Totais acumulados de ULF e R$ <span aria-hidden="true">∑</span></li>
+              <li>Exportação CSV com linha de totais <span aria-hidden="true">➡️</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="como-usar" class="sec section-colored bg-3">
+        <h2><a class="anchor" href="#como-usar">Como usar passo a passo</a></h2>
+        <ol>
+          <li>Escolha a atividade no seletor “Atividade”. Revise unidade, coeficiente e descrição <span aria-hidden="true">📝</span>.</li>
+          <li>Defina o tipo de execução: Normal ou HE. Ao selecionar SAP, o tipo é ajustado automaticamente <span aria-hidden="true">→</span>.</li>
+          <li>Informe a quantidade. O ULF estimado aparece em tempo real (qtd × coef) <span aria-hidden="true">≈</span>.</li>
+          <li>Opcional: preencha/seleciona o Código SAP para vincular ao item <span aria-hidden="true">📎</span>.</li>
+          <li>Clique em “Adicionar à lista” para registrar o item na tabela <span aria-hidden="true">✔️</span>.</li>
+          <li>Repita e, ao terminar, “Baixar lista” (CSV) <span aria-hidden="true">➡️</span>.</li>
+          <li>Use “Remover” para excluir linhas ou “Limpar lista” para esvaziar tudo <span aria-hidden="true">❎</span>.</li>
+        </ol>
+        <div class="note ok">
+          <span aria-hidden="true">✅</span> Boas práticas: valide Tipo, Unidade e Coeficiente no lançamento. Prefira selecionar pelo SAP para evitar divergências de tipo.
+        </div>
+      </section>
+
+      <section id="regras-calculo" class="sec section-colored bg-4">
+        <h2><a class="anchor" href="#regras-calculo">Mapeamento de dados e regras de cálculo</a></h2>
+        <ul>
+          <li>Valor unitário da ULF: 13,53 R$ (ajustável no código) <span aria-hidden="true">⚙️</span>.</li>
+          <li>Fórmulas por item:
+            <ul>
+              <li>ULF_item = Quantidade × Coeficiente(Atividade, Tipo) <span aria-hidden="true">×</span></li>
+              <li>Valor_item (R$) = ULF_item × 13,53 <span aria-hidden="true">→</span></li>
+            </ul>
+          </li>
+          <li>Totais:
+            <ul>
+              <li>Total ULF = soma de ULF_item <span aria-hidden="true">∑</span></li>
+              <li>Total R$ = Total ULF × 13,53 <span aria-hidden="true">=</span></li>
+            </ul>
+          </li>
+          <li>Coeficientes por atividade e tipo (exemplos):
+            <ul>
+              <li>Roçada Densidade 01: Normal 0,021; HE 0,029 ULF/m² <span aria-hidden="true">±</span></li>
+              <li>Aceiro: Normal 5,750; HE 8,050 ULF/un</li>
+            </ul>
+          </li>
+        </ul>
+        <div class="note">
+          <span aria-hidden="true">💡</span> Os coeficientes são tabelados no sistema. O usuário não precisa calcular manualmente.
+        </div>
+      </section>
+
+      <section id="interface" class="sec section-colored bg-5">
+        <h2><a class="anchor" href="#interface">Estrutura da interface</a></h2>
+        <div class="grid two">
+          <div class="card">
+            <h3>Formulário principal <span aria-hidden="true">📝</span></h3>
+            <ul>
+              <li>Atividade (seleção primária)</li>
+              <li>Quantidade (valor numérico) <span aria-hidden="true">#</span></li>
+              <li>Código SAP (digitar ou selecionar) <span aria-hidden="true">📎</span></li>
+              <li>Badges informativos: Tipo atual e Coeficiente <span aria-hidden="true">ℹ️</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Ações e resultados <span aria-hidden="true">∑</span></h3>
+            <ul>
+              <li>Adicionar à lista, Limpar lista, Baixar lista <span aria-hidden="true">➡️</span></li>
+              <li>Painéis de resultado: Total ULF, Valor (R$), ULF da atividade selecionada <span aria-hidden="true">∑</span></li>
+              <li>Tabela de itens com botão Remover <span aria-hidden="true">❎</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="csv" class="sec section-colored bg-6">
+        <h2><a class="anchor" href="#csv">Exportação CSV</a> <span aria-hidden="true">➡️</span></h2>
+        <ul>
+          <li>Colunas: #; Atividade; Código SAP; Tipo; Qtd.; Unid.; Coef. (ULF/Unid.); ULF; R$</li>
+          <li>Separador: ponto e vírgula “;” (compatível com Excel pt-BR) <span aria-hidden="true">↔</span></li>
+          <li>Inclui BOM UTF-8 para acentuação correta <span aria-hidden="true">✅</span></li>
+          <li>Linha de totais ao final <span aria-hidden="true">∑</span></li>
+        </ul>
+        <div class="note">
+          <span aria-hidden="true">💡</span> Se o Excel não separar corretamente, use Dados → Texto para Colunas e selecione “;”.
+        </div>
+      </section>
+
+      <section id="casos-uso" class="sec section-colored bg-7">
+        <h2><a class="anchor" href="#casos-uso">Casos de uso típicos</a></h2>
+        <ul class="inline-icons">
+          <li><span class="i">↗️</span>Orçamento rápido com estimativas e envio do CSV</li>
+          <li><span class="i">📝</span>Medição de campo durante vistorias e consolidação posterior</li>
+          <li><span class="i">✔️</span>Conferência de lançamentos com base em OS e códigos SAP</li>
+        </ul>
+      </section>
+
+      <section id="erros-comuns" class="sec section-colored bg-8">
+        <h2><a class="anchor" href="#erros-comuns">Erros comuns e como evitar</a> <span aria-hidden="true">⚠️</span></h2>
+        <ul class="inline-icons">
+          <li><span class="i">❗</span>Quantidade vazia/zero: preencha valor > 0 antes de adicionar</li>
+          <li><span class="i">⚠️</span>Tipo incorreto: prefira selecionar pelo SAP para garantir Normal/HE correto</li>
+          <li><span class="i">↩️</span>Linhas duplicadas: use “Remover” na tabela <span aria-hidden="true">❎</span></li>
+          <li><span class="i">💡</span>CSV com separador “;”: ajuste a regionalização do Excel se necessário</li>
+        </ul>
+      </section>
+
+      <section id="manutencao" class="sec section-colored bg-9">
+        <h2><a class="anchor" href="#manutencao">Manutenção e personalizações</a> <span aria-hidden="true">🧰</span></h2>
+        <ul class="inline-icons">
+          <li><span class="i">⚙️</span>Atualizar valor da ULF: alterar a constante ULF_VALUE no código</li>
+          <li><span class="i">📝</span>Adicionar/editar atividades: ajustar listas de atividades, coeficientes e mapa SAP</li>
+          <li><span class="i">🎨</span>Identidade visual: editar cores e tipografia no CSS</li>
+          <li><span class="i">📎</span>Rodapé: “Produced by https://www.startrainings.net/”</li>
+        </ul>
+      </section>
+
+      <section id="seguranca" class="sec section-colored bg-10">
+        <h2><a class="anchor" href="#seguranca">Segurança e desempenho</a> <span aria-hidden="true">🔒</span></h2>
+        <ul class="inline-icons">
+          <li><span class="i">📦</span>Offline/PWA com Service Worker para cache básico</li>
+          <li><span class="i">🛡️</span>Privacidade: cálculos locais, sem envio automático de dados</li>
+          <li><span class="i">⚡</span>Performance: operações em memória, eficiente para dezenas/centenas de linhas</li>
+        </ul>
+      </section>
+
+      <section id="faq" class="sec section-colored bg-2">
+        <h2><a class="anchor" href="#faq">Perguntas frequentes (FAQ)</a> <span aria-hidden="true">❓</span></h2>
+        <details class="card" open>
+          <summary>Posso mudar o valor de ULF para outra região/contrato? <span aria-hidden="true">💡</span></summary>
+          <p>Sim. Edite a constante ULF_VALUE.</p>
+        </details>
+        <details class="card" open style="margin-top:10px">
+          <summary>Dá para usar sem SAP? <span aria-hidden="true">➡️</span></summary>
+          <p>Sim. Selecione a atividade e informe a quantidade. Tipo padrão: Normal.</p>
+        </details>
+        <details class="card" open style="margin-top:10px">
+          <summary>O CSV abre com caracteres estranhos no Excel? <span aria-hidden="true">⚠️</span></summary>
+          <p>O arquivo exportado inclui BOM UTF-8. Se persistir, importe explicitamente como UTF-8.</p>
+        </details>
+        <details class="card" open style="margin-top:10px">
+          <summary>Posso imprimir a lista? <span aria-hidden="true">🖨️</span></summary>
+          <p>Sim, use a função de impressão do navegador. Podemos incluir um layout de impressão otimizado.</p>
+        </details>
+      </section>
+
+      <section id="boas-praticas" class="sec section-colored bg-3">
+        <h2><a class="anchor" href="#boas-praticas">Boas práticas operacionais</a> <span aria-hidden="true">✅</span></h2>
+        <ul class="inline-icons">
+          <li><span class="i">✔️</span>Crie “pacotes de atividades” padrão para reutilização</li>
+          <li><span class="i">⚠️</span>Sempre confirme Tipo, Unidade, Coeficiente e compatibilidade do SAP</li>
+          <li><span class="i">🗂️</span>Versione o arquivo HTML (ex.: v1.1, v1.2) para controle de mudanças</li>
+        </ul>
+      </section>
+
+      <section id="roadmap" class="sec section-colored bg-4">
+        <h2><a class="anchor" href="#roadmap">Roadmap sugerido</a> <span aria-hidden="true">➡️</span></h2>
+        <ul class="inline-icons">
+          <li><span class="i">📝</span>Observações por linha (trecho, coordenadas, OS)</li>
+          <li><span class="i">🗃️</span>Agrupamento por trecho/ordem de serviço</li>
+          <li><span class="i">🖨️</span>Edição inline e impressão com layout A4</li>
+          <li><span class="i">⬆️</span>Upload de CSV para reabrir listas salvas</li>
+          <li><span class="i">☁️</span>Permissões e backup em nuvem</li>
+        </ul>
+      </section>
+
+      <section id="contato" class="sec section-colored bg-5">
+        <h2><a class="anchor" href="#contato">Contato</a> <span aria-hidden="true">↗️</span></h2>
+        <p>Startrainings Consultoria & Treinamentos</p>
+        <ul>
+          <li>Site: <a href="https://www.startrainings.net/" target="_blank" rel="noopener">https://www.startrainings.net/</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      © 2025 Startrainings · Apostila “Calculadora de ULFs”. Para melhor resultado na impressão, use papel A4, margens padrão e habilite cores de fundo.
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const sections = [...document.querySelectorAll('main .sec')];
+      const toc = document.querySelector('.toc-list');
+      if(!sections.length || !toc) return;
+    })();
+  </script>
+</body>
+</html>
