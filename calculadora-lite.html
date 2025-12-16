@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora de ULFs — Celesc (Lite corrigida)</title>
+  <meta name="description" content="Calculadora de ULFs - Versão Lite corrigida: mantém interface da original, com botões coloridos, badges de Tipo/Coef. e imagem ilustrativa." />
+  <style>
+    :root{
+      --bg:#0f1115; --panel:#171a21; --muted:#aab2c0; --text:#e8ecf1;
+      --primary:#2bb673; --accent:#3ea1ff; --danger:#e53935; --border:#252a34;
+      --table-strip:#11141a; --warning:#ff7a1a;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--text)}
+    a{color:#8ec7ff}
+    .wrap{max-width:980px;margin:0 auto;padding:24px 16px}
+    h1{margin:0 0 8px;font-size:24px}
+    p.lead{margin:0 0 16px;color:var(--muted);font-size:14px}
+    .card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:12px}
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(12,1fr)}
+    .col-12{grid-column:span 12}
+    .col-8{grid-column:span 8}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    .col-3{grid-column:span 3}
+    @media (max-width:720px){.col-12,.col-8,.col-6,.col-4,.col-3{grid-column:1/-1}}
+    label{display:block; font-size:13px; color:var(--muted); margin-bottom:6px}
+    input, select, textarea{
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border);
+      background:#0c0f14; color:var(--text); outline:none
+    }
+    input:focus, select:focus, textarea:focus{border-color:var(--accent)}
+    .row{display:flex; gap:8px; flex-wrap:wrap}
+    .btn{
+      appearance:none; border:1px solid var(--border); background:#11161f; color:var(--text);
+      padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600
+    }
+    .btn-primary{background:var(--primary); border-color:var(--primary); color:#06140c}
+    .btn-outline{background:transparent}
+    .btn-danger{background:var(--danger); border-color:var(--danger); color:#fff}
+    .btn-warning{background:var(--warning); border-color:var(--warning); color:#1c120a}
+    .small{font-size:12px;color:var(--muted)}
+    .muted{color:var(--muted)}
+    table{width:100%; border-collapse:collapse; margin-top:12px; font-size:14px}
+    thead th{ text-align:left; font-weight:700; color:var(--muted); border-bottom:1px solid var(--border); padding:10px 8px}
+    tbody td{padding:10px 8px; border-bottom:1px solid var(--border)}
+    tbody tr:nth-child(odd){background:var(--table-strip)}
+    tfoot td{padding:12px 8px; font-weight:700}
+    .right{text-align:right}
+    .kpi{
+      display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px
+    }
+    .kpi .box{background:#0c0f14; border:1px solid var(--border); border-radius:10px; padding:12px}
+    .kpi .box h3{margin:0 0 4px; font-size:13px; color:var(--muted)}
+    .kpi .box .value{font-size:20px; font-weight:800}
+    @media (max-width:720px){.kpi{grid-template-columns:1fr}}
+    footer{margin:24px 0 0; color:var(--muted); font-size:12px}
+    .badge{background:#243245; color:#cfe6ff; padding:2px 8px; border-radius:999px; font-size:12px}
+    /* Badges “Tipo” e “Coef.” em formato pílula */
+    .badge-pill{
+      display:inline-block; padding:6px 10px; border-radius:999px;
+      background:#0f2237; color:#cfe6ff; font-size:12px; border:1px solid #28415f
+    }
+    /* Figura/Imagem ilustrativa */
+    .hero{margin:0 0 12px 0; border-radius:12px; overflow:hidden; border:1px solid var(--border)}
+    .hero img{display:block; width:100%; height:auto; max-height:320px; object-fit:cover}
+    .hero figcaption{font-size:12px;color:var(--muted);background:#0c0f14;padding:6px 10px;border-top:1px solid var(--border)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Calculadora de ULFs</h1>
+    <p class="lead">Como usar: abra este endereço no navegador do seu celular ou computador: <a href="https://luiz-star.github.io/Calculadora-ULF-ARMAF/" target="_blank" rel="noopener">https://luiz-star.github.io/Calculadora-ULF-ARMAF/</a>. Basta tocar/clicar no link acima e a calculadora abrirá automaticamente.</p>
+    <p class="small">1 ULF = R$ 13,53 • Coeficientes conforme o contrato “Contrato - 4600012975-34-37.pdf”.</p>
+
+    <!-- Imagem ilustrativa restaurada -->
+    <figure class="hero">
+      <!-- Substitua o src abaixo pelo caminho que você já usa no projeto (a mesma imagem da original, se possível) -->
+      <img src="./img/celesc-faixa.jpg" alt="Imagem ilustrativa da faixa de servidão e redes de distribuição." />
+      <figcaption>Imagem ilustrativa da faixa de servidão e redes de distribuição.</figcaption>
+    </figure>
+
+    <section class="card">
+      <div class="grid">
+        <div class="col-12">
+          <label for="atividade">Atividade</label>
+          <!-- Na original, o campo é um select. Aqui mantemos input ou você pode trocar por select facilmente -->
+          <input id="atividade" placeholder="Digite a atividade" />
+          <div class="small" id="atividadeDescricao" style="margin-top:6px"></div>
+        </div>
+
+        <div class="col-6">
+          <label for="quantidade">Quantidade</label>
+          <input id="quantidade" type="number" inputmode="decimal" step="0.0001" min="0" value="1" placeholder="Ex.: 100" />
+          <div class="small" style="margin-top:6px">
+            <span>Unidade: <span id="unidadeLabel">—</span> • Coeficiente (<span id="tipoInline">Normal</span>): <span id="coefInline">—</span> ULF por <span id="unidadeInline">—</span></span>
+          </div>
+          <!-- Badges pílula (mini botões) Tipo/Coef -->
+          <div class="row" style="align-items:center; gap:8px; margin-top:6px">
+            <span class="badge-pill" id="badgeTipo">Tipo: Normal</span>
+            <span class="badge-pill" id="badgeCoef">Coef.: —</span>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <label for="codigoSap">Código SAP (digitar)</label>
+          <input id="codigoSap" placeholder="Ex.: 651646 ou 653733" />
+          <div class="small">Opcional — você pode digitar ou escolher no seletor abaixo.</div>
+        </div>
+
+        <div class="col-12">
+          <label for="selectSap">Selecionar Código SAP</label>
+          <select id="selectSap">
+            <option value="">— Selecione um código SAP —</option>
+          </select>
+          <div class="small" style="margin-top:6px">Ao escolher um código SAP, a atividade e o tipo (Normal/HE) são preenchidos automaticamente.</div>
+        </div>
+
+        <div class="col-6">
+          <label>Tipo</label>
+          <div class="row" role="group" aria-label="Tipo">
+            <label class="row" style="align-items:center; gap:6px">
+              <input type="radio" name="tipo" id="tipoNormal" value="Normal" checked />
+              <span>Normal</span>
+            </label>
+            <label class="row" style="align-items:center; gap:6px">
+              <input type="radio" name="tipo" id="tipoHE" value="HE" />
+              <span>HE</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <div class="small">Coef.: <span id="coef">—</span></div>
+              <div class="small">Tipo: <span id="tipoLabel">Normal</span></div>
+            </div>
+            <div class="small">Coef.: <span id="coef2">—</span></div>
+          </div>
+        </div>
+
+        <div class="col-12 row" style="margin-top:6px">
+          <button id="btnAdd" class="btn btn-primary">Adicionar à lista</button>
+          <button id="btnLimpar" class="btn btn-danger">Limpar lista</button>
+          <!-- Botão Baixar lista com cor laranja (warning) conforme original -->
+          <button id="btnBaixar" class="btn btn-warning">Baixar lista</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <h2 class="muted" style="margin:0;font-size:16px">Itens</h2>
+        <span class="badge"><span id="count">0</span> itens</span>
+      </div>
+      <div style="overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Atividade</th>
+              <th>Código SAP</th>
+              <th>Tipo</th>
+              <th class="right">Qtd.</th>
+              <th>Unid.</th>
+              <th class="right">Coef. (ULF/Unid.)</th>
+              <th class="right">ULF</th>
+              <!-- Coluna R$ removida nesta versão -->
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="7" class="right">Total de ULF</td>
+              <td class="right"><span id="totalUlf">0,0000</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="kpi">
+        <div class="box">
+          <h3>Total de ULF</h3>
+          <div class="value" id="kpiUlf">0,0000</div>
+        </div>
+        <!-- Bloco Valor (R$) REMOVIDO nesta versão -->
+        <div class="box">
+          <h3>ULF da atividade selecionada</h3>
+          <div class="value" id="kpiUlfSel">0,0000</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Produced by <a href="https://www.startrainings.net/" target="_blank" rel="noopener">https://www.startrainings.net/</a>
+    </footer>
+  </div>
+
+  <script>
+    // ULF unitário (mantido para referência)
+    const ULF_REAIS = 13.53;
+
+    // Amostra de SAPs (substitua pela sua fonte real)
+    const SAPS = [
+      { codigo: '651646', atividade: 'Roçada (m²) Densidade 01 (Cerrado)', desc: 'Remoção de vegetação baixa; inclui poda de galhos que invadam a faixa.', unid: 'm²', coefNormal: 0.021, coefHE: 0.021, tipoPadrao: 'Normal' },
+      { codigo: '653733', atividade: 'Poda de árvore em rede', desc: 'Poda em rede de distribuição.', unid: 'ud', coefNormal: 0.500, coefHE: 0.500, tipoPadrao: 'Normal' },
+      { codigo: '700001', atividade: 'Inspeção de faixa', desc: 'Inspeção de faixa — horas extras.', unid: 'km', coefNormal: 0.120, coefHE: 0.150, tipoPadrao: 'HE' }
+    ];
+
+    // Estado
+    const state = {
+      itens: [],
+      ulfSel: 0,
+      unidSel: '—',
+      descSel: '',
+    };
+
+    // Elements
+    const atividadeEl = document.getElementById('atividade');
+    const atividadeDescEl = document.getElementById('atividadeDescricao');
+    const qtdEl = document.getElementById('quantidade');
+    const inputSapEl = document.getElementById('codigoSap');
+    const selectSapEl = document.getElementById('selectSap');
+    const tipoNormalEl = document.getElementById('tipoNormal');
+    const tipoHEEl = document.getElementById('tipoHE');
+    const tipoLabelEl = document.getElementById('tipoLabel');
+    const tipoInlineEl = document.getElementById('tipoInline');
+    const coefInlineEl = document.getElementById('coefInline');
+    const unidadeLabelEl = document.getElementById('unidadeLabel');
+    const unidadeInlineEl = document.getElementById('unidadeInline');
+    const coefEl = document.getElementById('coef');
+    const coef2El = document.getElementById('coef2');
+    const btnAdd = document.getElementById('btnAdd');
+    const btnLimpar = document.getElementById('btnLimpar');
+    const btnBaixar = document.getElementById('btnBaixar');
+    const tbody = document.getElementById('tbody');
+    const totalUlfEl = document.getElementById('totalUlf');
+    const kpiUlf = document.getElementById('kpiUlf');
+    const kpiUlfSel = document.getElementById('kpiUlfSel');
+    const countEl = document.getElementById('count');
+
+    // Badges (mini botões)
+    const badgeTipo = document.getElementById('badgeTipo');
+    const badgeCoef = document.getElementById('badgeCoef');
+
+    // Popular select de SAP
+    for (const s of SAPS){
+      const opt = document.createElement('option');
+      opt.value = s.codigo;
+      opt.textContent = `${s.codigo} — ${s.atividade}`;
+      opt.dataset.unid = s.unid;
+      opt.dataset.desc = s.desc || '';
+      opt.dataset.coefNormal = s.coefNormal;
+      opt.dataset.coefHE = s.coefHE;
+      opt.dataset.tipoPadrao = s.tipoPadrao || 'Normal';
+      selectSapEl.appendChild(opt);
+    }
+
+    function atualizarCoefETipo(){
+      const tipoAtual = tipoHEEl.checked ? 'HE' : 'Normal';
+      const opt = selectSapEl.selectedOptions[0];
+      let coef = 0;
+      if(opt){
+        const cN = parseFloat(opt.dataset.coefNormal || '0') || 0;
+        const cH = parseFloat(opt.dataset.coefHE || opt.dataset.coefNormal || '0') || 0;
+        coef = (tipoAtual === 'HE') ? cH : cN;
+      }
+      state.ulfSel = coef;
+      coefEl.textContent = fmt(coef);
+      coef2El.textContent = fmt(coef);
+      coefInlineEl.textContent = fmt(coef);
+      kpiUlfSel.textContent = fmt4(coef);
+      badgeCoef.textContent = 'Coef.: ' + (coef ? coef.toLocaleString('pt-BR',{maximumFractionDigits:4}) : '—');
+      tipoLabelEl.textContent = tipoAtual;
+      tipoInlineEl.textContent = tipoAtual;
+      badgeTipo.textContent = 'Tipo: ' + tipoAtual;
+    }
+
+    selectSapEl.addEventListener('change', ()=>{
+      const value = selectSapEl.value;
+      if(!value){
+        estadoPadrao();
+        return;
+      }
+      const opt = selectSapEl.selectedOptions[0];
+      atividadeEl.value = opt.textContent.split(' — ').slice(1).join(' — ');
+      atividadeDescEl.textContent = opt.dataset.desc || '';
+      inputSapEl.value = value;
+
+      // Unidade
+      state.unidSel = opt.dataset.unid || '—';
+      unidadeLabelEl.textContent = state.unidSel;
+      unidadeInlineEl.textContent = state.unidSel;
+
+      // Tipo padrão do item
+      const tipoPadrao = opt.dataset.tipoPadrao || 'Normal';
+      if(tipoPadrao === 'HE'){ tipoHEEl.checked = true; } else { tipoNormalEl.checked = true; }
+
+      atualizarCoefETipo();
+    });
+
+    function estadoPadrao(){
+      atividadeEl.value = '';
+      atividadeDescEl.textContent = '';
+      inputSapEl.value = '';
+      selectSapEl.value = '';
+      tipoNormalEl.checked = true;
+      tipoLabelEl.textContent = 'Normal';
+      tipoInlineEl.textContent = 'Normal';
+      badgeTipo.textContent = 'Tipo: Normal';
+      unidadeLabelEl.textContent = '—';
+      unidadeInlineEl.textContent = '—';
+      coefEl.textContent = '—';
+      coef2El.textContent = '—';
+      coefInlineEl.textContent = '—';
+      badgeCoef.textContent = 'Coef.: —';
+      state.ulfSel = 0;
+      state.unidSel = '—';
+      kpiUlfSel.textContent = '0,0000';
+    }
+
+    // Atualiza label do tipo ao trocar radio
+    function setTipoLabel(){
+      atualizarCoefETipo();
+    }
+    tipoNormalEl.addEventListener('change', setTipoLabel);
+    tipoHEEl.addEventListener('change', setTipoLabel);
+
+    btnAdd.addEventListener('click', ()=>{
+      const atividade = (atividadeEl.value || '').trim() || '—';
+      const cod = (inputSapEl.value || '').trim() || selectSapEl.value || '—';
+      const tipo = document.querySelector('input[name="tipo"]:checked')?.value || 'Normal';
+      const qtd = parseFloat(qtdEl.value || '0') || 0;
+      const coef = state.ulfSel || 0;
+      const unid = state.unidSel || '—';
+      const ulf = qtd * (coef || 0);
+
+      const item = {
+        id: crypto.randomUUID(),
+        atividade,
+        codigo: cod,
+        tipo,
+        qtd,
+        unid,
+        coef,
+        ulf
+      };
+      state.itens.push(item);
+      render();
+    });
+
+    btnLimpar.addEventListener('click', ()=>{
+      if(state.itens.length === 0) return;
+      if(confirm('Tem certeza que deseja limpar a lista?')){
+        state.itens = [];
+        render();
+      }
+    });
+
+    btnBaixar.addEventListener('click', ()=>{
+      const linhas = [];
+      linhas.push(['#','Atividade','Código SAP','Tipo','Qtd.','Unid.','Coef. (ULF/Unid.)','ULF'].join(';'));
+      state.itens.forEach((it, i)=>{
+        linhas.push([
+          String(i+1),
+          csv(it.atividade),
+          csv(it.codigo),
+          it.tipo,
+          String(it.qtd).replace('.',','),
+          it.unid,
+          String(it.coef).replace('.',','),
+          String(round4(it.ulf)).replace('.',',')
+        ].join(';'));
+      });
+      const csvStr = '\uFEFF' + linhas.join('\n');
+      const blob = new Blob([csvStr], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'lista-ulf-lite.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    function render(){
+      tbody.innerHTML = '';
+      let total = 0;
+      state.itens.forEach((it, i)=>{
+        total += it.ulf;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i+1}</td>
+          <td>${esc(it.atividade)}</td>
+          <td>${esc(it.codigo)}</td>
+          <td>${esc(it.tipo)}</td>
+          <td class="right">${fmt(it.qtd)}</td>
+          <td>${esc(it.unid)}</td>
+          <td class="right">${fmt(it.coef)}</td>
+          <td class="right">${fmt4(it.ulf)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      totalUlfEl.textContent = fmt4(total);
+      kpiUlf.textContent = fmt4(total);
+      countEl.textContent = String(state.itens.length);
+    }
+
+    // Utils
+    function fmt(n){ return Number(n||0).toLocaleString('pt-BR', {maximumFractionDigits: 4}); }
+    function fmt4(n){
+      return Number(round4(n)).toLocaleString('pt-BR', {minimumFractionDigits: 4, maximumFractionDigits: 4});
+    }
+    function round4(n){ return Math.round((Number(n)||0) * 10000) / 10000; }
+    function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c])); }
+    function csv(s){
+      const v = (s ?? '').toString();
+      return /[;"\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+    }
+
+    // Estado inicial
+    estadoPadrao();
+    render();
+  </script>
+</body>
+</html>5
