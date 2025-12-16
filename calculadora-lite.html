@@ -1,146 +1,193 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Calculadora de ULFs — Lite</title>
-  <meta name="description" content="Calculadora de ULFs - Versão Lite (sem Valor R$)." />
-  <style>
-    :root{
-      --bg:#0f1115; --panel:#171a21; --muted:#aab2c0; --text:#e8ecf1;
-      --primary:#2bb673; --accent:#3ea1ff; --danger:#e53935; --border:#252a34;
-      --table-strip:#11141a; --warning:#ff7a1a; --input-bg:#0c0f14;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    a{color:#8ec7ff}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
-    h1{margin:0 0 8px;font-size:24px}
-    p.lead{margin:0 0 16px;color:var(--muted);font-size:14px}
-    .card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:12px}
-    .grid{display:grid;gap:12px;grid-template-columns:repeat(12,1fr)}
-    .col-12{grid-column:span 12}
-    .col-8{grid-column:span 8}
-    .col-6{grid-column:span 6}
-    .col-4{grid-column:span 4}
-    .col-3{grid-column:span 3}
-    @media (max-width:960px){.col-md-6{grid-column:span 6}}
-    @media (max-width:720px){.col-12,.col-8,.col-6,.col-4,.col-3,.col-md-6{grid-column:1/-1}}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    select,input{
-      width:100%; padding:12px 12px; border-radius:8px; border:1px solid var(--border);
-      background:var(--input-bg); color:var(--text); outline:none; height:44px;
-    }
-    select:focus,input:focus{border-color:var(--accent)}
-    .row{display:flex; gap:8px; flex-wrap:wrap}
-    .btn{appearance:none;border:1px solid var(--border);background:#11161f;color:var(--text);
-      padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;height:40px}
-    .btn-primary{background:var(--primary);border-color:var(--primary);color:#06140c}
-    .btn-danger{background:var(--danger);border-color:var(--danger);color:#fff}
-    .btn-warning{background:var(--warning);border-color:var(--warning);color:#1c120a}
-    .small{font-size:12px;color:var(--muted)}
-    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
-    thead th{text-align:left;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);padding:10px 8px}
-    tbody td{padding:10px 8px;border-bottom:1px solid var(--border)}
-    tbody tr:nth-child(odd){background:var(--table-strip)}
-    tfoot td{padding:12px 8px;font-weight:700}
-    .right{text-align:right}
-    .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
-    .kpi .box{background:#0c0f14;border:1px solid var(--border);border-radius:10px;padding:12px}
-    .kpi .box h3{margin:0 0 4px;font-size:13px;color:var(--muted)}
-    .kpi .box .value{font-size:20px;font-weight:800}
-    @media (max-width:600px){.kpi{grid-template-columns:1fr}}
-    footer{margin:24px 0 0;color:var(--muted);font-size:12px}
-    .badge-pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#0f2237;color:#cfe6ff;font-size:12px;border:1px solid #28415f}
-    .hero{margin:0 0 12px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
-    .hero img{display:block;width:100%;height:auto;max-height:320px;object-fit:cover}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de ULFs - Celesc</title>
+
+<meta name="theme-color" content="#0d6efd" />
+<link rel="manifest" href="manifest.webmanifest" />
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%230d6efd'/%3E%3Ctext x='50%25' y='57%25' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='140' fill='white'%3EULF%3C/text%3E%3C/svg%3E" />
+<link rel="alternate icon" sizes="32x32" href="./icons/icon-32.png" />
+<link rel="alternate icon" sizes="192x192" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" href="./icons/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Calculadora ULFs" />
+
+<style>
+  :root{
+    --bg:#0f172a; --card:#111827; --muted:#94a3b8; --acc:#22c55e; --txt:#e5e7eb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;
+    background:linear-gradient(160deg,#0b1223,#0a0f1a 50%,#0b1223);
+    color:var(--txt);
+    min-height:100dvh; display:flex; flex-direction:column;
+  }
+  header{padding:20px 16px; text-align:center}
+  header h1{margin:0; font-size:clamp(20px,4vw,28px)}
+  header p{margin:6px 0 0; color:var(--muted); font-size:14px}
+
+  .wrap{max-width:980px; margin:0 auto; padding:16px; width:100%}
+  .card{
+    background:rgba(17,24,39,0.75); border:1px solid rgba(148,163,184,0.15);
+    border-radius:14px; padding:16px; backdrop-filter: blur(6px);
+  }
+
+  /* Bloco da imagem (hero) */
+  .hero{
+    width:100%;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid rgba(148,163,184,0.18);
+    background:#0b1223;
+    margin-bottom:14px;
+  }
+  .hero img{
+    display:block;
+    width:100%;
+    height: clamp(140px, 28vw, 220px);
+    object-fit: cover;
+  }
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media (max-width:720px){ .grid{grid-template-columns:1fr} }
+  label{font-size:13px; color:var(--muted); display:block; margin-bottom:6px}
+  input, select, textarea{
+    width:100%; padding:12px 12px; border-radius:10px;
+    border:1px solid rgba(148,163,184,0.25); background:#0b1223; color:var(--txt);
+    outline:none; transition: border .2s;
+  }
+  input:focus, select:focus, textarea:focus{border-color:#60a5fa}
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media (max-width:520px){ .row{grid-template-columns:1fr} }
+  .muted{color:var(--muted); font-size:12px}
+  .result{
+    margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+  @media (max-width:640px){ .result{grid-template-columns:1fr} }
+  .pill{
+    background:#0b1223; border:1px solid rgba(148,163,184,0.25); border-radius:12px;
+    padding:14px
+  }
+  .pill h3{margin:0 0 6px; font-size:14px; color:var(--muted)}
+  .pill p{margin:0; font-size:18px}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+  button{
+    padding:10px 14px; border-radius:10px; border:1px solid rgba(148,163,184,0.25);
+    background:#0b1223; color:#e5e7eb; cursor:pointer
+  }
+  button.primary{background:linear-gradient(180deg,#16a34a,#059669); border:none}
+  .btn-orange{
+    background:#f97316; border:none; color:#1b1007; font-weight:600
+  }
+  .btn-orange:hover{filter:brightness(1.05)}
+  .table{
+    margin-top:18px; overflow:auto; border-radius:12px; border:1px solid rgba(148,163,184,0.2)
+  }
+  table{width:100%; border-collapse:separate; border-spacing:0}
+  th, td{padding:10px 12px; border-bottom:1px solid rgba(148,163,184,0.15); text-align:left; font-size:13px}
+  th{background:#0b1223; color:#cbd5e1; position:sticky; top:0}
+  tr:last-child td{border-bottom:none}
+  .right{text-align:right}
+  .inline{display:flex; gap:10px; align-items:center}
+  .inline > *{flex:1}
+  .badge{display:inline-block; padding:2px 8px; border-radius:999px; background:#0b1223; border:1px solid rgba(148,163,184,0.3); font-size:12px; color:#cbd5e1}
+
+  footer{
+    margin-top:auto; padding:16px; text-align:center; color:var(--muted);
+    font-size:12px; opacity:.9
+  }
+  footer a{color:#9ec1ff; text-decoration:none}
+  footer a:hover{text-decoration:underline}
+</style>
 </head>
 <body>
-  <div class="wrap">
+  <header>
     <h1>Calculadora de ULFs</h1>
-    <p class="lead">Versão Lite — sem campo de Valor (R$).</p>
+    <p class="muted" style="margin-top:10px">
+      Como usar: abra este endereço no navegador do seu celular ou computador:
+      <a href="https://luiz-star.github.io/Calculadora-ULF-ARMAF/" target="_blank" rel="noopener">
+        https://luiz-star.github.io/Calculadora-ULF-ARMAF/
+      </a>. Basta tocar/clicar no link acima e a calculadora abrirá automaticamente.
+    </p>
+    <p>1 ULF = R$ 13,53 • Coeficientes conforme o contrato “Contrato - 4600012975-34-37.pdf”.</p>
+  </header>
 
-    <figure class="hero">
-      <img src="./CJC.png" alt="Imagem" />
-    </figure>
+  <div class="wrap">
+    <div class="card">
 
-    <section class="card">
+      <figure class="hero">
+        <img src="./CJC.png" alt="Linhas de distribuição passando por área verde ao amanhecer" />
+      </figure>
+
       <div class="grid">
-        <div class="col-12">
+        <div>
           <label for="atividade">Atividade</label>
-          <select id="atividade">
-            <option value="">— Selecione uma atividade —</option>
-          </select>
-          <div class="small" id="atividadeDescricao" style="margin-top:6px"></div>
+          <select id="atividade"></select>
+          <div id="desc" class="muted" style="margin-top:6px"></div>
         </div>
-
-        <div class="col-6 col-md-6">
-          <label for="quantidade">Quantidade</label>
-          <input id="quantidade" type="number" inputmode="decimal" step="0.0001" min="0" value="1" placeholder="Ex.: 100" />
-          <div class="small inline-help" style="display:flex;justify-content:space-between;gap:12px;margin-top:6px">
-            <span>Unidade: <span id="unidadeLabel">—</span></span>
-            <span>Coeficiente (<span id="tipoInline">Normal</span>): <span id="coefInline">—</span> ULF por <span id="unidadeInline">—</span></span>
+        <div class="row">
+          <div>
+            <label for="quantidade">Quantidade</label>
+            <input id="quantidade" type="number" min="0" step="0.01" placeholder="Ex.: 100" />
+            <div id="unidade" class="muted" style="margin-top:6px"></div>
           </div>
-          <div class="row" style="align-items:center; gap:8px; margin-top:6px">
-            <span class="badge-pill" id="badgeTipo">Tipo: Normal</span>
-            <span class="badge-pill" id="badgeCoef">Coef.: —</span>
+          <div>
+            <label for="sap">Código SAP (digitar)</label>
+            <input id="sap" type="text" inputmode="numeric" placeholder="Ex.: 651546 ou 653733" />
+            <div class="muted">Opcional — você pode digitar ou escolher no seletor abaixo.</div>
           </div>
         </div>
 
-        <div class="col-6 col-md-6">
-          <label for="codigoSap">Código SAP (digitar)</label>
-          <input id="codigoSap" placeholder="Ex.: 651646 ou 653733" />
-          <div class="small">Opcional — você pode digitar ou escolher no seletor abaixo.</div>
-        </div>
-
-        <div class="col-12">
-          <label for="selectSap">Selecionar Código SAP</label>
-          <select id="selectSap">
+        <div>
+          <label for="sapSelect">Selecionar Código SAP</label>
+          <select id="sapSelect">
             <option value="">— Selecione um código SAP —</option>
           </select>
-          <div class="small" style="margin-top:6px">Ao escolher um código SAP, a atividade e o tipo (Normal/HE) são preenchidos automaticamente.</div>
+          <div class="muted" style="margin-top:6px">Ao escolher um código SAP, a atividade e o tipo (Normal/HE) são preenchidos automaticamente.</div>
         </div>
 
-        <div class="col-6">
-          <label>Tipo</label>
-          <div class="row" role="group" aria-label="Tipo">
-            <label class="row" style="align-items:center; gap:6px">
-              <input type="radio" name="tipo" id="tipoNormal" value="Normal" checked />
-              <span>Normal</span>
-            </label>
-            <label class="row" style="align-items:center; gap:6px">
-              <input type="radio" name="tipo" id="tipoHE" value="HE" />
-              <span>HE</span>
-            </label>
+        <div class="inline" style="display:none">
+          <div>
+            <label for="tipo">Tipo</label>
+            <select id="tipo">
+              <option value="Normal">Normal</option>
+              <option value="HE">HE</option>
+            </select>
+          </div>
+          <div>
+            <span class="badge" id="coefBadge">Coef.: —</span>
           </div>
         </div>
-
-        <div class="col-6">
-          <div class="row" style="justify-content:space-between">
-            <div>
-              <div class="small">Coef.: <span id="coef">—</span></div>
-              <div class="small">Tipo: <span id="tipoLabel">Normal</span></div>
-            </div>
-            <div class="small">Coef.: <span id="coef2">—</span></div>
-          </div>
-        </div>
-
-        <div class="col-12 row" style="margin-top:6px">
-          <button id="btnAdd" class="btn btn-primary">Adicionar à lista</button>
-          <button id="btnLimpar" class="btn btn-danger">Limpar lista</button>
-          <button id="btnBaixar" class="btn btn-warning">Baixar lista</button>
+        <div>
+          <span class="badge" id="tipoBadgeVisivel">Tipo: Normal</span>
+          <span class="badge" id="coefBadgeVisivel" style="margin-left:8px">Coef.: —</span>
         </div>
       </div>
-    </section>
 
-    <section class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <h2 class="muted" style="margin:0;font-size:16px">Itens</h2>
-        <span class="badge-pill"><span id="count">0</span> itens</span>
+      <div class="actions">
+        <button class="primary" id="adicionar">Adicionar à lista</button>
+        <button id="limpar">Limpar lista</button>
+        <button id="baixar" class="btn-orange">Baixar lista</button>
       </div>
-      <div style="overflow:auto">
-        <table>
+
+      <div class="result">
+        <div class="pill">
+          <h3>Total de ULF</h3>
+          <p id="totalUlf">0,0000</p>
+        </div>
+        <div class="pill">
+          <h3>ULF da atividade selecionada</h3>
+          <p id="ulfAtual">0,0000</p>
+        </div>
+      </div>
+
+      <div class="table" id="tabelaWrap" style="display:none">
+        <table id="tabela">
           <thead>
             <tr>
               <th>#</th>
@@ -151,251 +198,331 @@
               <th>Unid.</th>
               <th class="right">Coef. (ULF/Unid.)</th>
               <th class="right">ULF</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody id="tbody"></tbody>
-          <tfoot>
-            <tr>
-              <td colspan="7" class="right">Total de ULF</td>
-              <td class="right"><span id="totalUlf">0,0000</span></td>
-            </tr>
-          </tfoot>
+          <tbody></tbody>
         </table>
       </div>
 
-      <div class="kpi">
-        <div class="box">
-          <h3>Total de ULF</h3>
-          <div class="value" id="kpiUlf">0,0000</div>
-        </div>
-        <div class="box">
-          <h3>ULF da atividade selecionada</h3>
-          <div class="value" id="kpiUlfSel">0,0000</div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <a href="./">Voltar para a versão principal</a>
-    </footer>
+    </div>
   </div>
 
-  <script>
-    // Base de dados — exemplo
-    const SAPS = [
-      { codigo: '651646', atividade: '01 — Roçada (m²) Densidade 01 (Cerrado)', desc: 'Remoção de vegetação baixa; inclui poda de galhos que invadam a faixa.', unid: 'm²', coefNormal: 0.021, coefHE: 0.021, tipoPadrao: 'Normal' },
-      { codigo: '653733', atividade: 'Poda de árvore em rede', desc: 'Poda em rede de distribuição.', unid: 'ud', coefNormal: 0.500, coefHE: 0.500, tipoPadrao: 'Normal' },
-      { codigo: '700001', atividade: 'Inspeção de faixa', desc: 'Inspeção de faixa — horas extras.', unid: 'km', coefNormal: 0.120, coefHE: 0.150, tipoPadrao: 'HE' }
-    ];
+  <footer>
+    Produced by <a href="https://www.startrainings.net/" target="_blank" rel="noopener">https://www.startrainings.net/</a>
+  </footer>
 
-    const state = { itens:[], ulfSel:0, unidSel:'—' };
+<script>
+(function(){
+  // Dados iguais aos da sua calculadora original
+  const atividades = [
+    {id:1, nome:"Roçada (m²) Densidade 01 (Cerrado)", unit:"m²", desc:"Remoção de vegetação baixa; inclui poda de galhos que invadam a faixa."},
+    {id:2, nome:"Roçada (m²) Densidade 02 (Vegetação Adensada)", unit:"m²", desc:"Vegetação até 10 cm de diâmetro; pode exigir foice/facão/motorroçadeira."},
+    {id:3, nome:"Roçada (m²) Densidade 03 (Desmatamento)", unit:"m²", desc:"Necessário machado/motosserra; pode haver troncos até 40 cm e >15 árvores/100 m."},
+    {id:4, nome:"Corte de taquaral (m²) Pequeno (Rural)", unit:"m²", desc:"Taquaras/taquaris <3 cm; sem motosserra; limpeza ao nível do solo."},
+    {id:5, nome:"Corte de bambuzal (m²) Pequeno (Rural)", unit:"m²", desc:"Bambu <8 cm; sem motosserra; limpeza ao nível do solo."},
+    {id:6, nome:"Corte de bambuzal (m²) Grande (Rural)", unit:"m²", desc:"Bambu ≥8 cm; com motosserra/foice; limpeza ao nível do solo."},
+    {id:7, nome:"Corte de bambuzal (m²) Urbano", unit:"m²", desc:"Corte em área urbana; inclui recolhimento do entulho."},
+    {id:8, nome:"Poda de bambuzal (m²) Pequeno (Rural)", unit:"m²", desc:"Bambu <8 cm; poda até 2 m de altura; sem motosserra."},
+    {id:9, nome:"Poda de bambuzal (m²) Grande (Rural)", unit:"m²", desc:"Bambu ≥8 cm; poda até 2 m de altura; com motosserra/foice."},
+    {id:10, nome:"Poda de bambuzal (m²) Urbano", unit:"m²", desc:"Poda até 2 m; área urbana; inclui recolhimento."},
+    {id:11, nome:"Corte de árvore isolada (un) Rural — sem direcionamento/recolhimento", unit:"un", desc:"Árvore isolada; sem direcionamento; sem recolhimento."},
+    {id:12, nome:"Corte de árvore 40–60 cm ou com direcionamento (un) Rural", unit:"un", desc:"Com direcionamento; sem recolhimento."},
+    {id:13, nome:"Corte de árvore diâmetro >60 cm (un) Rural", unit:"un", desc:"Com direcionamento; sem recolhimento; inclui ordenamento de resíduos."},
+    {id:14, nome:"Corte de árvore pequeno porte (un) Urbano — com recolhimento", unit:"un", desc:"Sem direcionamento; com recolhimento."},
+    {id:15, nome:"Corte de árvore (un) Urbano — com direcionamento e recolhimento", unit:"un", desc:"Com direcionamento; inclui desbaste, corte de toras e recolhimento."},
+    {id:16, nome:"Abate de reflorestamento em crescimento — preventivo (un) Rural", unit:"un", desc:"Supressão preventiva de exóticas em crescimento."},
+    {id:17, nome:"Poda de árvore (un) — sem recolhimento (Rural/Urbano)", unit:"un", desc:"Sem recolhimento."},
+    {id:18, nome:"Poda de árvore (un) — com recolhimento (Rural/Urbano)", unit:"un", desc:"Com recolhimento."},
+    {id:19, nome:"Poda/supressão parcial (un) — com recolhimento (Rural/Urbano)", unit:"un", desc:"Grande volume; com recolhimento."},
+    {id:20, nome:"Aceiro (un)", unit:"un", desc:"Desbaste ao redor do poste: 1 m capinado + 3 m roçado; descartar fora da área."},
+    {id:21, nome:"Limpeza de pátio de Subestação (m²)", unit:"m²", desc:"Limpeza de pátio/instalações; inclui recolhimento e destinação final."}
+  ];
 
-    // Elements
-    const selAtividade = document.getElementById('atividade');
-    const atividadeDescEl = document.getElementById('atividadeDescricao');
-    const qtdEl = document.getElementById('quantidade');
-    const inputSapEl = document.getElementById('codigoSap');
-    const selectSapEl = document.getElementById('selectSap');
-    const tipoNormalEl = document.getElementById('tipoNormal');
-    const tipoHEEl = document.getElementById('tipoHE');
-    const tipoLabelEl = document.getElementById('tipoLabel');
-    const tipoInlineEl = document.getElementById('tipoInline');
-    const coefInlineEl = document.getElementById('coefInline');
-    const unidadeLabelEl = document.getElementById('unidadeLabel');
-    const unidadeInlineEl = document.getElementById('unidadeInline');
-    const coefEl = document.getElementById('coef');
-    const coef2El = document.getElementById('coef2');
-    const btnAdd = document.getElementById('btnAdd');
-    const btnLimpar = document.getElementById('btnLimpar');
-    const btnBaixar = document.getElementById('btnBaixar');
-    const tbody = document.getElementById('tbody');
-    const totalUlfEl = document.getElementById('totalUlf');
-    const kpiUlf = document.getElementById('kpiUlf');
-    const kpiUlfSel = document.getElementById('kpiUlfSel');
-    const countEl = document.getElementById('count');
-    const badgeTipo = document.getElementById('badgeTipo');
-    const badgeCoef = document.getElementById('badgeCoef');
+  const coeficientes = {
+    1:{Normal:0.021, HE:0.029},
+    2:{Normal:0.030, HE:0.042},
+    3:{Normal:0.039, HE:0.054},
+    4:{Normal:0.200, HE:0.280},
+    5:{Normal:0.700, HE:0.980},
+    6:{Normal:1.500, HE:2.100},
+    7:{Normal:2.000, HE:2.800},
+    8:{Normal:0.350, HE:0.420},
+    9:{Normal:0.750, HE:1.050},
+    10:{Normal:1.000, HE:1.400},
+    11:{Normal:0.330, HE:0.462},
+    12:{Normal:0.500, HE:0.700},
+    13:{Normal:3.000, HE:4.200},
+    14:{Normal:1.250, HE:1.750},
+    15:{Normal:3.500, HE:4.900},
+    16:{Normal:0.009, HE:0.012},
+    17:{Normal:0.500, HE:0.700},
+    18:{Normal:1.000, HE:1.400},
+    19:{Normal:3.000, HE:4.200},
+    20:{Normal:5.750, HE:8.050},
+    21:{Normal:0.022, HE:0.030}
+  };
 
-    function popularSeletores(){
-      for(const s of SAPS){
-        const optA = document.createElement('option');
-        optA.value = s.codigo;
-        optA.textContent = s.atividade;
-        selAtividade.appendChild(optA);
+  const sapMap = [
+    {sap:"651546", atividadeId:1, tipo:"Normal"},
+    {sap:"653733", atividadeId:1, tipo:"HE"},
+    {sap:"651547", atividadeId:2, tipo:"Normal"},
+    {sap:"653734", atividadeId:2, tipo:"HE"},
+    {sap:"651548", atividadeId:3, tipo:"Normal"},
+    {sap:"653735", atividadeId:3, tipo:"HE"},
+    {sap:"654053", atividadeId:4, tipo:"Normal"},
+    {sap:"651549", atividadeId:5, tipo:"Normal"},
+    {sap:"653736", atividadeId:5, tipo:"HE"},
+    {sap:"651550", atividadeId:6, tipo:"Normal"},
+    {sap:"653737", atividadeId:6, tipo:"HE"},
+    {sap:"651551", atividadeId:7, tipo:"Normal"},
+    {sap:"653738", atividadeId:7, tipo:"HE"},
+    {sap:"653729", atividadeId:8, tipo:"Normal"},
+    {sap:"653750", atividadeId:8, tipo:"HE"},
+    {sap:"653730", atividadeId:9, tipo:"Normal"},
+    {sap:"653751", atividadeId:9, tipo:"HE"},
+    {sap:"653731", atividadeId:10, tipo:"Normal"},
+    {sap:"653752", atividadeId:10, tipo:"HE"},
+    {sap:"651552", atividadeId:11, tipo:"Normal"},
+    {sap:"653739", atividadeId:11, tipo:"HE"},
+    {sap:"651553", atividadeId:12, tipo:"Normal"},
+    {sap:"653740", atividadeId:12, tipo:"HE"},
+    {sap:"651554", atividadeId:13, tipo:"Normal"},
+    {sap:"653741", atividadeId:13, tipo:"HE"},
+    {sap:"651555", atividadeId:14, tipo:"Normal"},
+    {sap:"653742", atividadeId:14, tipo:"HE"},
+    {sap:"651556", atividadeId:15, tipo:"Normal"},
+    {sap:"653743", atividadeId:15, tipo:"HE"},
+    {sap:"651557", atividadeId:16, tipo:"Normal"},
+    {sap:"653744", atividadeId:16, tipo:"HE"},
+    {sap:"651558", atividadeId:17, tipo:"Normal"},
+    {sap:"653745", atividadeId:17, tipo:"HE"},
+    {sap:"651559", atividadeId:18, tipo:"Normal"},
+    {sap:"653746", atividadeId:18, tipo:"HE"},
+    {sap:"651560", atividadeId:19, tipo:"Normal"},
+    {sap:"653747", atividadeId:19, tipo:"HE"},
+    {sap:"618333", atividadeId:20, tipo:"Normal"},
+    {sap:"653732", atividadeId:20, tipo:"HE"},
+    {sap:"652105", atividadeId:21, tipo:"Normal"},
+    {sap:"653748", atividadeId:21, tipo:"HE"},
+  ];
 
-        const optS = document.createElement('option');
-        optS.value = s.codigo;
-        optS.textContent = `${s.codigo} — ${s.atividade}`;
-        selectSapEl.appendChild(optS);
-      }
+  const selAtv = document.getElementById('atividade');
+  atividades.forEach((a)=>{
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = `${String(a.id).padStart(2,'0')} — ${a.nome}`;
+    selAtv.appendChild(opt);
+  });
+
+  const selSAP = document.getElementById('sapSelect');
+  sapMap.forEach(entry=>{
+    const atv = atividades.find(a=>a.id===entry.atividadeId);
+    if (!atv) return;
+    const opt = document.createElement('option');
+    opt.value = entry.sap;
+    opt.textContent = `${entry.sap} — ${String(atv.id).padStart(2,'0')} ${atv.nome} (${entry.tipo})`;
+    selSAP.appendChild(opt);
+  });
+
+  const qtdEl = document.getElementById('quantidade');
+  const sapEl = document.getElementById('sap');
+  const ulfAtualEl = document.getElementById('ulfAtual');
+  const unidadeEl = document.getElementById('unidade');
+  const descEl = document.getElementById('desc');
+  const totalUlfEl = document.getElementById('totalUlf');
+
+  let tipoAtual = 'Normal';
+  const tipoBadgeVisivel = document.getElementById('tipoBadgeVisivel');
+  const coefBadgeVisivel = document.getElementById('coefBadgeVisivel');
+
+  function fmtNumber(n, dec=4){
+    return (isFinite(n)?n:0).toLocaleString('pt-BR',{minimumFractionDigits:dec, maximumFractionDigits:dec});
+  }
+  function getCoef(atvId, tipo){
+    const c = coeficientes[atvId] || {Normal:0, HE:0};
+    return (tipo === 'HE') ? c.HE : c.Normal;
+  }
+  function setTipo(newTipo){
+    tipoAtual = newTipo === 'HE' ? 'HE' : 'Normal';
+    tipoBadgeVisivel.textContent = `Tipo: ${tipoAtual}`;
+  }
+  function refreshInfo(){
+    const atvId = +selAtv.value;
+    const a = atividades.find(x=>x.id===atvId);
+    if (!a) return;
+    const coef = getCoef(atvId, tipoAtual);
+    unidadeEl.textContent = `Unidade: ${a.unit} • Coeficiente (${tipoAtual}): ${coef.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:4})} ULF por ${a.unit}`;
+    descEl.textContent = a.desc || '';
+    coefBadgeVisivel.textContent = `Coef.: ${coef.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:4})}`;
+    const qtd = parseFloat(qtdEl.value)||0;
+    ulfAtualEl.textContent = fmtNumber(qtd * coef);
+  }
+
+  selAtv.addEventListener('change', refreshInfo);
+  qtdEl.addEventListener('input', refreshInfo);
+
+  selSAP.addEventListener('change', ()=>{
+    const code = selSAP.value;
+    if (!code){
+      setTipo('Normal');
+      refreshInfo();
+      return;
     }
-
-    function getSapByCodigo(cod){
-      return SAPS.find(s => s.codigo === cod) || null;
+    const map = sapMap.find(s=>s.sap===code);
+    if (map){
+      selAtv.value = String(map.atividadeId);
+      setTipo(map.tipo);
+      sapEl.value = code;
+      refreshInfo();
     }
-    function getSapAtual(){
-      const cod = selAtividade.value || selectSapEl.value || inputSapEl.value.trim();
-      return getSapByCodigo(cod);
+  });
+
+  sapEl.addEventListener('input', ()=>{
+    const code = sapEl.value.trim();
+    const map = sapMap.find(s=>s.sap===code);
+    if (map){
+      selAtv.value = String(map.atividadeId);
+      setTipo(map.tipo);
+      selSAP.value = code;
+    } else {
+      selSAP.value = "";
+      setTipo('Normal');
     }
+    refreshInfo();
+  });
 
-    function atualizarCoefETipo(){
-      const tipoAtual = tipoHEEl.checked ? 'HE' : 'Normal';
-      const sap = getSapAtual();
-      const coef = sap ? (tipoAtual === 'HE' ? sap.coefHE : sap.coefNormal) : 0;
-      state.ulfSel = coef;
-      const unid = sap?.unid || '—';
-      state.unidSel = unid;
+  // Inicialização
+  setTipo('Normal');
+  // Seleciona a primeira atividade por padrão
+  if (selAtv.options.length) selAtv.selectedIndex = 0;
+  refreshInfo();
 
-      coefEl.textContent = fmt(coef);
-      coef2El.textContent = fmt(coef);
-      coefInlineEl.textContent = fmt(coef);
-      tipoLabelEl.textContent = tipoAtual;
-      tipoInlineEl.textContent = tipoAtual;
-      unidadeLabelEl.textContent = unid;
-      unidadeInlineEl.textContent = unid;
-      badgeTipo.textContent = 'Tipo: ' + tipoAtual;
-      badgeCoef.textContent = 'Coef.: ' + (coef ? coef.toLocaleString('pt-BR',{maximumFractionDigits:4}) : '—');
-    }
+  // Lista
+  const itens = [];
+  const tbody = document.querySelector('#tabela tbody');
+  const tabelaWrap = document.getElementById('tabelaWrap');
 
-    selAtividade.addEventListener('change', ()=>{
-      const sap = getSapByCodigo(selAtividade.value);
-      if(!sap){ resetSelecao(); return; }
-      selectSapEl.value = sap.codigo;
-      inputSapEl.value = sap.codigo;
-      atividadeDescEl.textContent = sap.desc || '';
-      if((sap.tipoPadrao||'Normal') === 'HE'){ tipoHEEl.checked = true; } else { tipoNormalEl.checked = true; }
-      atualizarCoefETipo();
+  function render(){
+    tbody.innerHTML = '';
+    let totalUlf = 0;
+    itens.forEach((it,idx)=>{
+      totalUlf += it.ulf;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx+1}</td>
+        <td>${it.nome}</td>
+        <td>${it.sap||''}</td>
+        <td>${it.tipo}</td>
+        <td class="right">${fmtNumber(it.qtd,2)}</td>
+        <td>${it.unit}</td>
+        <td class="right">${fmtNumber(it.coef,4)}</td>
+        <td class="right">${fmtNumber(it.ulf,4)}</td>
+        <td class="right"><button data-i="${idx}" class="rem">Remover</button></td>
+      `;
+      tbody.appendChild(tr);
     });
-
-    selectSapEl.addEventListener('change', ()=>{
-      const sap = getSapByCodigo(selectSapEl.value);
-      if(!sap){ resetSelecao(); return; }
-      selAtividade.value = sap.codigo;
-      inputSapEl.value = sap.codigo;
-      atividadeDescEl.textContent = sap.desc || '';
-      if((sap.tipoPadrao||'Normal') === 'HE'){ tipoHEEl.checked = true; } else { tipoNormalEl.checked = true; }
-      atualizarCoefETipo();
-    });
-
-    inputSapEl.addEventListener('input', ()=>{
-      const sap = getSapByCodigo(inputSapEl.value.trim());
-      if(!sap){ resetSelecao(true); return; }
-      selAtividade.value = sap.codigo;
-      selectSapEl.value = sap.codigo;
-      atividadeDescEl.textContent = sap.desc || '';
-      if((sap.tipoPadrao||'Normal') === 'HE'){ tipoHEEl.checked = true; } else { tipoNormalEl.checked = true; }
-      atualizarCoefETipo();
-    });
-
-    function resetSelecao(keepTyped=false){
-      if(!keepTyped) inputSapEl.value='';
-      selAtividade.value = '';
-      selectSapEl.value = '';
-      atividadeDescEl.textContent = '';
-      state.unidSel = '—';
-      unidadeLabelEl.textContent = '—';
-      unidadeInlineEl.textContent = '—';
-      coefEl.textContent = '—';
-      coef2El.textContent = '—';
-      coefInlineEl.textContent = '—';
-      badgeCoef.textContent = 'Coef.: —';
-      state.ulfSel = 0;
-      kpiUlfSel.textContent = '0,0000';
-      tipoNormalEl.checked = true;
-      tipoLabelEl.textContent = 'Normal';
-      tipoInlineEl.textContent = 'Normal';
-      badgeTipo.textContent = 'Tipo: Normal';
-    }
-
-    tipoNormalEl.addEventListener('change', atualizarCoefETipo);
-    tipoHEEl.addEventListener('change', atualizarCoefETipo);
-
-    document.getElementById('btnAdd').addEventListener('click', ()=>{
-      const sap = getSapAtual();
-      const atividade = sap ? sap.atividade : (selAtividade.options[selAtividade.selectedIndex]?.textContent || '—');
-      const cod = sap ? sap.codigo : (inputSapEl.value.trim() || selectSapEl.value || '—');
-      const tipo = document.querySelector('input[name="tipo"]:checked')?.value || 'Normal';
-      const qtd = parseFloat(qtdEl.value || '0') || 0;
-      const coef = state.ulfSel || 0;
-      const unid = state.unidSel || (sap?.unid || '—');
-      const ulf = qtd * (coef || 0);
-
-      const item = { id: crypto.randomUUID(), atividade, codigo: cod, tipo, qtd, unid, coef, ulf };
-      state.itens.push(item);
-      render();
-    });
-
-    document.getElementById('btnLimpar').addEventListener('click', ()=>{
-      if(state.itens.length === 0) return;
-      if(confirm('Tem certeza que deseja limpar a lista?')){
-        state.itens = [];
+    document.querySelectorAll('.rem').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const i = +e.currentTarget.getAttribute('data-i');
+        itens.splice(i,1);
         render();
-      }
-    });
-
-    document.getElementById('btnBaixar').addEventListener('click', ()=>{
-      const linhas = [];
-      linhas.push(['#','Atividade','Código SAP','Tipo','Qtd.','Unid.','Coef. (ULF/Unid.)','ULF'].join(';'));
-      state.itens.forEach((it, i)=>{
-        linhas.push([
-          String(i+1),
-          csv(it.atividade),
-          csv(it.codigo),
-          it.tipo,
-          String(it.qtd).replace('.',','),
-          it.unid,
-          String(it.coef).replace('.',','),
-          String(round4(it.ulf)).replace('.',',')
-        ].join(';'));
       });
-      const csvStr = '\uFEFF' + linhas.join('\n');
-      const blob = new Blob([csvStr], {type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'lista-ulf-lite.csv';
-      document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
     });
+    tabelaWrap.style.display = itens.length? 'block':'none';
+    totalUlfEl.textContent = fmtNumber(totalUlf,4);
+  }
 
-    function render(){
-      tbody.innerHTML = '';
-      let total = 0;
-      state.itens.forEach((it, i)=>{
-        total += it.ulf;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${i+1}</td>
-          <td>${esc(it.atividade)}</td>
-          <td>${esc(it.codigo)}</td>
-          <td>${esc(it.tipo)}</td>
-          <td class="right">${fmt(it.qtd)}</td>
-          <td>${esc(it.unid)}</td>
-          <td class="right">${fmt(it.coef)}</td>
-          <td class="right">${fmt4(it.ulf)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-      totalUlfEl.textContent = fmt4(total);
-      kpiUlf.textContent = fmt4(total);
-      kpiUlfSel.textContent = fmt4(state.ulfSel || 0);
-      countEl.textContent = String(state.itens.length);
-    }
+  document.getElementById('adicionar').addEventListener('click', ()=>{
+    const atvId = +selAtv.value;
+    const a = atividades.find(x=>x.id===atvId);
+    const qtd = parseFloat(qtdEl.value);
+    if (!qtd || qtd<=0){ alert('Informe uma quantidade válida.'); return; }
+    const coef = getCoef(atvId, tipoAtual);
+    const ulf = qtd * coef;
+    const sapCode = sapEl.value.trim() || selSAP.value || '';
+    itens.push({
+      id:a.id, nome:a.nome, unit:a.unit, tipo: tipoAtual, coef, qtd, ulf, sap: sapCode
+    });
+    render();
+    qtdEl.value = '';
+    ulfAtualEl.textContent = '0,0000';
+    qtdEl.focus();
+  });
 
-    // Utils
-    function fmt(n){ return Number(n||0).toLocaleString('pt-BR', {maximumFractionDigits: 4}); }
-    function fmt4(n){
-      return Number(round4(n)).toLocaleString('pt-BR', {minimumFractionDigits: 4, maximumFractionDigits: 4});
-    }
-    function round4(n){ return Math.round((Number(n)||0) * 10000) / 10000; }
-    function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c])); }
-    function csv(s){ const v = (s ?? '').toString(); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; }
-
-    // Init
-    (function init(){
-      popularSeletores();
-      resetSelecao();
+  document.getElementById('limpar').addEventListener('click', ()=>{
+    if (confirm('Deseja limpar todas as linhas?')){
+      itens.splice(0,itens.length);
       render();
-    })();
-  </script>
+    }
+  });
+
+  // Exporta CSV sem valores (R$)
+  document.getElementById('baixar').addEventListener('click', ()=>{
+    if (!itens.length){
+      alert('A lista está vazia.');
+      return;
+    }
+    const csv = buildCsv(itens);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lista-ulf-${timestamp()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
+  });
+
+  function buildCsv(rows){
+    const head = ['#','Atividade','Código SAP','Tipo','Qtd.','Unid.','Coef. (ULF/Unid.)','ULF'];
+    const out = [head.join(';')];
+    rows.forEach((it, idx) => {
+      out.push([
+        String(idx+1),
+        csvSanitize(it.nome),
+        csvSanitize(it.sap||''),
+        csvSanitize(it.tipo),
+        formatDecimalPt(it.qtd, 2),
+        csvSanitize(it.unit),
+        formatDecimalPt(it.coef, 4),
+        formatDecimalPt(it.ulf, 4)
+      ].join(';'));
+    });
+    const totalUlf = rows.reduce((s,r)=>s+r.ulf,0);
+    out.push('');
+    out.push(['Totais','','','','','', '', formatDecimalPt(totalUlf,4)].join(';'));
+    return '\uFEFF' + out.join('\n'); // BOM para Excel
+  }
+  function csvSanitize(s){
+    const str = String(s ?? '');
+    return /[;\n"]/g.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
+  }
+  function formatDecimalPt(num, frac){
+    const n = Number(num || 0);
+    const opts = { minimumFractionDigits: frac, maximumFractionDigits: frac };
+    return n.toLocaleString('pt-BR', opts);
+  }
+  function timestamp(){
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
+  }
+
+})();
+</script>
+
+<script>
+(function(){
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('SW registrado:', reg.scope))
+        .catch(err => console.error('Erro ao registrar SW:', err));
+    });
+  }
+})();
+</script>
 </body>
 </html>
