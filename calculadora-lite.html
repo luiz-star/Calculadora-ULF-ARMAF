@@ -19,45 +19,38 @@
 <style>
   :root{
     --bg:#0f172a; --card:#111827; --muted:#94a3b8; --acc:#22c55e; --txt:#e5e7eb;
-    --focus:#60a5fa; --border:rgba(148,163,184,0.28);
-    --btn:#0b1223; --btn-border:rgba(148,163,184,0.35);
-  }
-  @media (prefers-contrast: more){
-    :root{ --border:#9fb3cc; --btn-border:#b9c8da; --focus:#8ab4ff; }
   }
   *{box-sizing:border-box}
-  html{font-size:16px}
   body{
     margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;
     background:linear-gradient(160deg,#0b1223,#0a0f1a 50%,#0b1223);
-    color:var(--txt); min-height:100dvh; display:flex; flex-direction:column;
+    color:var(--txt);
+    min-height:100dvh; display:flex; flex-direction:column;
   }
   header{padding:20px 16px; text-align:center}
   header h1{margin:0; font-size:clamp(20px,4vw,28px)}
   header p{margin:6px 0 0; color:var(--muted); font-size:14px}
-  .visually-hidden{
-    position:absolute !important; width:1px; height:1px; margin:-1px; border:0; padding:0;
-    clip:rect(0 0 0 0); overflow:hidden; white-space:nowrap;
-  }
+
   .wrap{max-width:980px; margin:0 auto; padding:16px; width:100%}
   .card{
-    background:rgba(17,24,39,0.78); border:1px solid var(--border);
+    background:rgba(17,24,39,0.75); border:1px solid rgba(148,163,184,0.15);
     border-radius:14px; padding:16px; backdrop-filter: blur(6px);
   }
-  @media (prefers-reduced-motion: reduce){
-    .card{backdrop-filter:none}
-  }
 
-  /* Hero */
+  /* Bloco da imagem (hero) */
   .hero{
     width:100%;
-    border-radius:12px; overflow:hidden;
+    border-radius:12px;
+    overflow:hidden;
     border:1px solid rgba(148,163,184,0.18);
-    background:#0b1223; margin-bottom:14px;
+    background:#0b1223;
+    margin-bottom:14px;
   }
   .hero img{
-    display:block; width:100%;
-    height: clamp(140px, 28vw, 220px); object-fit: cover;
+    display:block;
+    width:100%;
+    height: clamp(140px, 28vw, 220px);
+    object-fit: cover;
   }
 
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
@@ -65,57 +58,44 @@
   label{font-size:13px; color:var(--muted); display:block; margin-bottom:6px}
   input, select, textarea{
     width:100%; padding:12px 12px; border-radius:10px;
-    border:1px solid var(--border); background:#0b1223; color:var(--txt);
-    outline:none; transition: box-shadow .15s ease, border-color .15s ease;
+    border:1px solid rgba(148,163,184,0.25); background:#0b1223; color:var(--txt);
+    outline:none; transition: border .2s;
   }
-  input:hover, select:hover{border-color:#a8c1f7}
-  input:focus, select:focus, textarea:focus{
-    border-color:var(--focus);
-    box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
-  }
+  input:focus, select:focus, textarea:focus{border-color:#60a5fa}
   .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
   @media (max-width:520px){ .row{grid-template-columns:1fr} }
   .muted{color:var(--muted); font-size:12px}
-
   .result{
     margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px;
   }
   @media (max-width:640px){ .result{grid-template-columns:1fr} }
   .pill{
-    background:#0b1223; border:1px solid var(--border); border-radius:12px; padding:14px
+    background:#0b1223; border:1px solid rgba(148,163,184,0.25); border-radius:12px;
+    padding:14px
   }
   .pill h3{margin:0 0 6px; font-size:14px; color:var(--muted)}
   .pill p{margin:0; font-size:18px}
-
-  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
   button{
-    padding:12px 16px; border-radius:10px; border:1px solid var(--btn-border);
-    background:var(--btn); color:#e5e7eb; cursor:pointer; font-weight:600;
-  }
-  button:focus-visible{
-    outline:2px solid var(--focus); outline-offset:2px;
-    box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
+    padding:10px 14px; border-radius:10px; border:1px solid rgba(148,163,184,0.25);
+    background:#0b1223; color:#e5e7eb; cursor:pointer
   }
   button.primary{background:linear-gradient(180deg,#16a34a,#059669); border:none}
-  button[disabled]{opacity:.6; cursor:not-allowed}
-  .btn-orange{ background:#f97316; border:none; color:#1b1007; font-weight:700 }
+  .btn-orange{
+    background:#f97316; border:none; color:#1b1007; font-weight:600
+  }
   .btn-orange:hover{filter:brightness(1.05)}
-
   .table{
     margin-top:18px; overflow:auto; border-radius:12px; border:1px solid rgba(148,163,184,0.2)
   }
   table{width:100%; border-collapse:separate; border-spacing:0}
-  th, td{padding:12px 12px; border-bottom:1px solid rgba(148,163,184,0.15); text-align:left; font-size:14px}
-  th{background:#0b1223; color:#cbd5e1; position:sticky; top:0; z-index:1}
+  th, td{padding:10px 12px; border-bottom:1px solid rgba(148,163,184,0.15); text-align:left; font-size:13px}
+  th{background:#0b1223; color:#cbd5e1; position:sticky; top:0}
   tr:last-child td{border-bottom:none}
   .right{text-align:right}
-
   .inline{display:flex; gap:10px; align-items:center}
   .inline > *{flex:1}
-  .badge{
-    display:inline-block; padding:6px 10px; border-radius:999px;
-    background:#0b1223; border:1px solid rgba(148,163,184,0.3); font-size:12px; color:#cbd5e1
-  }
+  .badge{display:inline-block; padding:2px 8px; border-radius:999px; background:#0b1223; border:1px solid rgba(148,163,184,0.3); font-size:12px; color:#cbd5e1}
 
   footer{
     margin-top:auto; padding:16px; text-align:center; color:var(--muted);
@@ -123,75 +103,58 @@
   }
   footer a{color:#9ec1ff; text-decoration:none}
   footer a:hover{text-decoration:underline}
-
-  /* Skip link */
-  .skip-link{
-    position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;
-  }
-  .skip-link:focus{
-    position:static; width:auto; height:auto; padding:8px 12px; background:#111827; border-radius:8px;
-  }
 </style>
 </head>
 <body>
-  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-
-  <header role="banner" aria-label="Cabeçalho">
+  <header>
     <h1>Calculadora de ULFs</h1>
     <p class="muted" style="margin-top:10px">
-      Como usar: abra no navegador do seu celular ou computador:
+      Como usar: abra este endereço no navegador do seu celular ou computador:
       <a href="https://luiz-star.github.io/Calculadora-ULF-ARMAF/" target="_blank" rel="noopener">
         https://luiz-star.github.io/Calculadora-ULF-ARMAF/
-      </a>.
+      </a>. Basta tocar/clicar no link acima e a calculadora abrirá automaticamente.
     </p>
     <p>1 ULF = R$ 13,53 • Coeficientes conforme o contrato “Contrato - 4600012975-34-37.pdf”.</p>
   </header>
 
-  <main id="conteudo" class="wrap" role="main">
-    <div class="card" aria-labelledby="titulo-form">
-      <h2 id="titulo-form" class="visually-hidden">Formulário de cálculo e lista</h2>
+  <div class="wrap">
+    <div class="card">
 
-      <figure class="hero" aria-hidden="true">
-        <img src="./CJC.png" alt="Linhas de distribuição em área verde ao amanhecer" />
+      <figure class="hero">
+        <img src="./CJC.png" alt="Linhas de distribuição passando por área verde ao amanhecer" />
       </figure>
 
-      <section class="grid" aria-label="Entrada de dados">
+      <div class="grid">
         <div>
           <label for="atividade">Atividade</label>
-          <select id="atividade" name="atividade" aria-describedby="desc"></select>
+          <select id="atividade"></select>
           <div id="desc" class="muted" style="margin-top:6px"></div>
         </div>
-
         <div class="row">
           <div>
             <label for="quantidade">Quantidade</label>
-            <input id="quantidade" name="quantidade" type="number" min="0" step="0.01"
-                   placeholder="Ex.: 100" inputmode="decimal" enterkeyhint="done" />
-            <div id="unidade" class="muted" style="margin-top:6px" aria-live="polite"></div>
+            <input id="quantidade" type="number" min="0" step="0.01" placeholder="Ex.: 100" />
+            <div id="unidade" class="muted" style="margin-top:6px"></div>
           </div>
           <div>
             <label for="sap">Código SAP (digitar)</label>
-            <input id="sap" name="sap" type="text" inputmode="numeric" pattern="[0-9]*"
-                   placeholder="Ex.: 651546 ou 653733" enterkeyhint="next"
-                   aria-describedby="sapHint" />
-            <div id="sapHint" class="muted">Opcional — você pode digitar ou escolher no seletor abaixo.</div>
+            <input id="sap" type="text" inputmode="numeric" placeholder="Ex.: 651546 ou 653733" />
+            <div class="muted">Opcional — você pode digitar ou escolher no seletor abaixo.</div>
           </div>
         </div>
 
         <div>
           <label for="sapSelect">Selecionar Código SAP</label>
-          <select id="sapSelect" name="sapSelect" aria-describedby="sapSelectHint">
+          <select id="sapSelect">
             <option value="">— Selecione um código SAP —</option>
           </select>
-          <div id="sapSelectHint" class="muted" style="margin-top:6px">
-            Ao escolher um código SAP, a atividade e o tipo (Normal/HE) são preenchidos automaticamente.
-          </div>
+          <div class="muted" style="margin-top:6px">Ao escolher um código SAP, a atividade e o tipo (Normal/HE) são preenchidos automaticamente.</div>
         </div>
 
         <div class="inline" style="display:none">
           <div>
             <label for="tipo">Tipo</label>
-            <select id="tipo" name="tipo">
+            <select id="tipo">
               <option value="Normal">Normal</option>
               <option value="HE">HE</option>
             </select>
@@ -200,60 +163,58 @@
             <span class="badge" id="coefBadge">Coef.: —</span>
           </div>
         </div>
-
-        <div aria-live="polite" aria-atomic="true">
+        <div>
           <span class="badge" id="tipoBadgeVisivel">Tipo: Normal</span>
           <span class="badge" id="coefBadgeVisivel" style="margin-left:8px">Coef.: —</span>
         </div>
-      </section>
+      </div>
 
-      <div class="actions" role="group" aria-label="Ações">
+      <div class="actions">
         <button class="primary" id="adicionar">Adicionar à lista</button>
         <button id="limpar">Limpar lista</button>
         <button id="baixar" class="btn-orange">Baixar lista</button>
       </div>
 
-      <section class="result" aria-label="Resultados">
-        <div class="pill" role="status" aria-live="polite" aria-atomic="true">
+      <div class="result">
+        <div class="pill">
           <h3>Total de ULF</h3>
           <p id="totalUlf">0,0000</p>
         </div>
-        <div class="pill" role="status" aria-live="polite" aria-atomic="true">
+        <div class="pill">
           <h3>ULF da atividade selecionada</h3>
           <p id="ulfAtual">0,0000</p>
         </div>
-      </section>
+      </div>
 
-      <section class="table" id="tabelaWrap" style="display:none" aria-label="Tabela de itens">
+      <div class="table" id="tabelaWrap" style="display:none">
         <table id="tabela">
-          <caption class="visually-hidden">Itens adicionados para cálculo de ULF</caption>
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Atividade</th>
-              <th scope="col">Código SAP</th>
-              <th scope="col">Tipo</th>
-              <th scope="col" class="right">Qtd.</th>
-              <th scope="col">Unid.</th>
-              <th scope="col" class="right">Coef. (ULF/Unid.)</th>
-              <th scope="col" class="right">ULF</th>
-              <th scope="col">Ação</th>
+              <th>#</th>
+              <th>Atividade</th>
+              <th>Código SAP</th>
+              <th>Tipo</th>
+              <th class="right">Qtd.</th>
+              <th>Unid.</th>
+              <th class="right">Coef. (ULF/Unid.)</th>
+              <th class="right">ULF</th>
+              <th></th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
-      </section>
+      </div>
 
     </div>
-  </main>
+  </div>
 
-  <footer role="contentinfo">
+  <footer>
     Produced by <a href="https://www.startrainings.net/" target="_blank" rel="noopener">https://www.startrainings.net/</a>
   </footer>
 
 <script>
 (function(){
-  // Dados (mesmos da sua base)
+  // Dados iguais aos da sua calculadora original
   const atividades = [
     {id:1, nome:"Roçada (m²) Densidade 01 (Cerrado)", unit:"m²", desc:"Remoção de vegetação baixa; inclui poda de galhos que invadam a faixa."},
     {id:2, nome:"Roçada (m²) Densidade 02 (Vegetação Adensada)", unit:"m²", desc:"Vegetação até 10 cm de diâmetro; pode exigir foice/facão/motorroçadeira."},
@@ -277,58 +238,84 @@
     {id:20, nome:"Aceiro (un)", unit:"un", desc:"Desbaste ao redor do poste: 1 m capinado + 3 m roçado; descartar fora da área."},
     {id:21, nome:"Limpeza de pátio de Subestação (m²)", unit:"m²", desc:"Limpeza de pátio/instalações; inclui recolhimento e destinação final."}
   ];
+
   const coeficientes = {
-    1:{Normal:0.021, HE:0.029}, 2:{Normal:0.030, HE:0.042}, 3:{Normal:0.039, HE:0.054},
-    4:{Normal:0.200, HE:0.280}, 5:{Normal:0.700, HE:0.980}, 6:{Normal:1.500, HE:2.100},
-    7:{Normal:2.000, HE:2.800}, 8:{Normal:0.350, HE:0.420}, 9:{Normal:0.750, HE:1.050},
-    10:{Normal:1.000, HE:1.400}, 11:{Normal:0.330, HE:0.462}, 12:{Normal:0.500, HE:0.700},
-    13:{Normal:3.000, HE:4.200}, 14:{Normal:1.250, HE:1.750}, 15:{Normal:3.500, HE:4.900},
-    16:{Normal:0.009, HE:0.012}, 17:{Normal:0.500, HE:0.700}, 18:{Normal:1.000, HE:1.400},
-    19:{Normal:3.000, HE:4.200}, 20:{Normal:5.750, HE:8.050}, 21:{Normal:0.022, HE:0.030}
+    1:{Normal:0.021, HE:0.029},
+    2:{Normal:0.030, HE:0.042},
+    3:{Normal:0.039, HE:0.054},
+    4:{Normal:0.200, HE:0.280},
+    5:{Normal:0.700, HE:0.980},
+    6:{Normal:1.500, HE:2.100},
+    7:{Normal:2.000, HE:2.800},
+    8:{Normal:0.350, HE:0.420},
+    9:{Normal:0.750, HE:1.050},
+    10:{Normal:1.000, HE:1.400},
+    11:{Normal:0.330, HE:0.462},
+    12:{Normal:0.500, HE:0.700},
+    13:{Normal:3.000, HE:4.200},
+    14:{Normal:1.250, HE:1.750},
+    15:{Normal:3.500, HE:4.900},
+    16:{Normal:0.009, HE:0.012},
+    17:{Normal:0.500, HE:0.700},
+    18:{Normal:1.000, HE:1.400},
+    19:{Normal:3.000, HE:4.200},
+    20:{Normal:5.750, HE:8.050},
+    21:{Normal:0.022, HE:0.030}
   };
+
   const sapMap = [
-    {sap:"651546", atividadeId:1, tipo:"Normal"},{sap:"653733", atividadeId:1, tipo:"HE"},
-    {sap:"651547", atividadeId:2, tipo:"Normal"},{sap:"653734", atividadeId:2, tipo:"HE"},
-    {sap:"651548", atividadeId:3, tipo:"Normal"},{sap:"653735", atividadeId:3, tipo:"HE"},
+    {sap:"651546", atividadeId:1, tipo:"Normal"},
+    {sap:"653733", atividadeId:1, tipo:"HE"},
+    {sap:"651547", atividadeId:2, tipo:"Normal"},
+    {sap:"653734", atividadeId:2, tipo:"HE"},
+    {sap:"651548", atividadeId:3, tipo:"Normal"},
+    {sap:"653735", atividadeId:3, tipo:"HE"},
     {sap:"654053", atividadeId:4, tipo:"Normal"},
-    {sap:"651549", atividadeId:5, tipo:"Normal"},{sap:"653736", atividadeId:5, tipo:"HE"},
-    {sap:"651550", atividadeId:6, tipo:"Normal"},{sap:"653737", atividadeId:6, tipo:"HE"},
-    {sap:"651551", atividadeId:7, tipo:"Normal"},{sap:"653738", atividadeId:7, tipo:"HE"},
-    {sap:"653729", atividadeId:8, tipo:"Normal"},{sap:"653750", atividadeId:8, tipo:"HE"},
-    {sap:"653730", atividadeId:9, tipo:"Normal"},{sap:"653751", atividadeId:9, tipo:"HE"},
-    {sap:"653731", atividadeId:10, tipo:"Normal"},{sap:"653752", atividadeId:10, tipo:"HE"},
-    {sap:"651552", atividadeId:11, tipo:"Normal"},{sap:"653739", atividadeId:11, tipo:"HE"},
-    {sap:"651553", atividadeId:12, tipo:"Normal"},{sap:"653740", atividadeId:12, tipo:"HE"},
-    {sap:"651554", atividadeId:13, tipo:"Normal"},{sap:"653741", atividadeId:13, tipo:"HE"},
-    {sap:"651555", atividadeId:14, tipo:"Normal"},{sap:"653742", atividadeId:14, tipo:"HE"},
-    {sap:"651556", atividadeId:15, tipo:"Normal"},{sap:"653743", atividadeId:15, tipo:"HE"},
-    {sap:"651557", atividadeId:16, tipo:"Normal"},{sap:"653744", atividadeId:16, tipo:"HE"},
-    {sap:"651558", atividadeId:17, tipo:"Normal"},{sap:"653745", atividadeId:17, tipo:"HE"},
-    {sap:"651559", atividadeId:18, tipo:"Normal"},{sap:"653746", atividadeId:18, tipo:"HE"},
-    {sap:"651560", atividadeId:19, tipo:"Normal"},{sap:"653747", atividadeId:19, tipo:"HE"},
-    {sap:"618333", atividadeId:20, tipo:"Normal"},{sap:"653732", atividadeId:20, tipo:"HE"},
-    {sap:"652105", atividadeId:21, tipo:"Normal"},{sap:"653748", atividadeId:21, tipo:"HE"},
+    {sap:"651549", atividadeId:5, tipo:"Normal"},
+    {sap:"653736", atividadeId:5, tipo:"HE"},
+    {sap:"651550", atividadeId:6, tipo:"Normal"},
+    {sap:"653737", atividadeId:6, tipo:"HE"},
+    {sap:"651551", atividadeId:7, tipo:"Normal"},
+    {sap:"653738", atividadeId:7, tipo:"HE"},
+    {sap:"653729", atividadeId:8, tipo:"Normal"},
+    {sap:"653750", atividadeId:8, tipo:"HE"},
+    {sap:"653730", atividadeId:9, tipo:"Normal"},
+    {sap:"653751", atividadeId:9, tipo:"HE"},
+    {sap:"653731", atividadeId:10, tipo:"Normal"},
+    {sap:"653752", atividadeId:10, tipo:"HE"},
+    {sap:"651552", atividadeId:11, tipo:"Normal"},
+    {sap:"653739", atividadeId:11, tipo:"HE"},
+    {sap:"651553", atividadeId:12, tipo:"Normal"},
+    {sap:"653740", atividadeId:12, tipo:"HE"},
+    {sap:"651554", atividadeId:13, tipo:"Normal"},
+    {sap:"653741", atividadeId:13, tipo:"HE"},
+    {sap:"651555", atividadeId:14, tipo:"Normal"},
+    {sap:"653742", atividadeId:14, tipo:"HE"},
+    {sap:"651556", atividadeId:15, tipo:"Normal"},
+    {sap:"653743", atividadeId:15, tipo:"HE"},
+    {sap:"651557", atividadeId:16, tipo:"Normal"},
+    {sap:"653744", atividadeId:16, tipo:"HE"},
+    {sap:"651558", atividadeId:17, tipo:"Normal"},
+    {sap:"653745", atividadeId:17, tipo:"HE"},
+    {sap:"651559", atividadeId:18, tipo:"Normal"},
+    {sap:"653746", atividadeId:18, tipo:"HE"},
+    {sap:"651560", atividadeId:19, tipo:"Normal"},
+    {sap:"653747", atividadeId:19, tipo:"HE"},
+    {sap:"618333", atividadeId:20, tipo:"Normal"},
+    {sap:"653732", atividadeId:20, tipo:"HE"},
+    {sap:"652105", atividadeId:21, tipo:"Normal"},
+    {sap:"653748", atividadeId:21, tipo:"HE"},
   ];
 
-  // Elementos
   const selAtv = document.getElementById('atividade');
-  const selSAP = document.getElementById('sapSelect');
-  const qtdEl = document.getElementById('quantidade');
-  const sapEl = document.getElementById('sap');
-  const ulfAtualEl = document.getElementById('ulfAtual');
-  const unidadeEl = document.getElementById('unidade');
-  const descEl = document.getElementById('desc');
-  const totalUlfEl = document.getElementById('totalUlf');
-  const tipoBadgeVisivel = document.getElementById('tipoBadgeVisivel');
-  const coefBadgeVisivel = document.getElementById('coefBadgeVisivel');
-
-  // Popular selects
   atividades.forEach((a)=>{
     const opt = document.createElement('option');
     opt.value = a.id;
     opt.textContent = `${String(a.id).padStart(2,'0')} — ${a.nome}`;
     selAtv.appendChild(opt);
   });
+
+  const selSAP = document.getElementById('sapSelect');
   sapMap.forEach(entry=>{
     const atv = atividades.find(a=>a.id===entry.atividadeId);
     if (!atv) return;
@@ -338,8 +325,17 @@
     selSAP.appendChild(opt);
   });
 
-  // Estado
+  const qtdEl = document.getElementById('quantidade');
+  const sapEl = document.getElementById('sap');
+  const ulfAtualEl = document.getElementById('ulfAtual');
+  const unidadeEl = document.getElementById('unidade');
+  const descEl = document.getElementById('desc');
+  const totalUlfEl = document.getElementById('totalUlf');
+
   let tipoAtual = 'Normal';
+  const tipoBadgeVisivel = document.getElementById('tipoBadgeVisivel');
+  const coefBadgeVisivel = document.getElementById('coefBadgeVisivel');
+
   function fmtNumber(n, dec=4){
     return (isFinite(n)?n:0).toLocaleString('pt-BR',{minimumFractionDigits:dec, maximumFractionDigits:dec});
   }
@@ -363,9 +359,9 @@
     ulfAtualEl.textContent = fmtNumber(qtd * coef);
   }
 
-  // Eventos
   selAtv.addEventListener('change', refreshInfo);
   qtdEl.addEventListener('input', refreshInfo);
+
   selSAP.addEventListener('change', ()=>{
     const code = selSAP.value;
     if (!code){
@@ -381,6 +377,7 @@
       refreshInfo();
     }
   });
+
   sapEl.addEventListener('input', ()=>{
     const code = sapEl.value.trim();
     const map = sapMap.find(s=>s.sap===code);
@@ -397,6 +394,7 @@
 
   // Inicialização
   setTipo('Normal');
+  // Seleciona a primeira atividade por padrão
   if (selAtv.options.length) selAtv.selectedIndex = 0;
   refreshInfo();
 
@@ -408,13 +406,9 @@
   function render(){
     tbody.innerHTML = '';
     let totalUlf = 0;
-
     itens.forEach((it,idx)=>{
       totalUlf += it.ulf;
       const tr = document.createElement('tr');
-
-      // Botão remover com rótulo acessível que descreve a linha
-      const removeId = `rem-${idx}`;
       tr.innerHTML = `
         <td>${idx+1}</td>
         <td>${it.nome}</td>
@@ -424,26 +418,17 @@
         <td>${it.unit}</td>
         <td class="right">${fmtNumber(it.coef,4)}</td>
         <td class="right">${fmtNumber(it.ulf,4)}</td>
-        <td>
-          <button data-i="${idx}" id="${removeId}" class="rem" aria-label="Remover item ${idx+1}: ${it.nome}, SAP ${it.sap||'—'}, quantidade ${fmtNumber(it.qtd,2)}">Remover</button>
-        </td>
+        <td class="right"><button data-i="${idx}" class="rem">Remover</button></td>
       `;
       tbody.appendChild(tr);
     });
-
-    // Eventos de remoção
     document.querySelectorAll('.rem').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         const i = +e.currentTarget.getAttribute('data-i');
         itens.splice(i,1);
         render();
-        // Devolve foco de forma previsível
-        const next = document.querySelector('.rem');
-        if (next) next.focus();
-        else document.getElementById('adicionar').focus();
       });
     });
-
     tabelaWrap.style.display = itens.length? 'block':'none';
     totalUlfEl.textContent = fmtNumber(totalUlf,4);
   }
@@ -452,11 +437,7 @@
     const atvId = +selAtv.value;
     const a = atividades.find(x=>x.id===atvId);
     const qtd = parseFloat(qtdEl.value);
-    if (!qtd || qtd<=0){
-      alert('Informe uma quantidade válida.');
-      qtdEl.focus();
-      return;
-    }
+    if (!qtd || qtd<=0){ alert('Informe uma quantidade válida.'); return; }
     const coef = getCoef(atvId, tipoAtual);
     const ulf = qtd * coef;
     const sapCode = sapEl.value.trim() || selSAP.value || '';
@@ -466,17 +447,13 @@
     render();
     qtdEl.value = '';
     ulfAtualEl.textContent = '0,0000';
-    // Foco volta para a quantidade para facilitar input repetido
     qtdEl.focus();
   });
 
   document.getElementById('limpar').addEventListener('click', ()=>{
-    if (!itens.length){ return; }
     if (confirm('Deseja limpar todas as linhas?')){
       itens.splice(0,itens.length);
       render();
-      // Foco informado após limpeza
-      document.getElementById('adicionar').focus();
     }
   });
 
@@ -496,8 +473,6 @@
     a.click();
     URL.revokeObjectURL(url);
     a.remove();
-    // Mensagem não intrusiva após download (para leitores de tela)
-    totalUlfEl.setAttribute('data-downloaded','true');
   });
 
   function buildCsv(rows){
@@ -518,11 +493,11 @@
     const totalUlf = rows.reduce((s,r)=>s+r.ulf,0);
     out.push('');
     out.push(['Totais','','','','','', '', formatDecimalPt(totalUlf,4)].join(';'));
-    return '\\uFEFF' + out.join('\\n'); // BOM para Excel
+    return '\uFEFF' + out.join('\n'); // BOM para Excel
   }
   function csvSanitize(s){
     const str = String(s ?? '');
-    return /[;\\n"]/g.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
+    return /[;\n"]/g.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
   }
   function formatDecimalPt(num, frac){
     const n = Number(num || 0);
@@ -534,11 +509,6 @@
     const pad = n => String(n).padStart(2,'0');
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
   }
-
-  // Acessibilidade extra: rola a tabela para o último item adicionado, mantendo cabeçalho visível
-  const tabelaWrap = document.getElementById('tabelaWrap');
-  const originalRender = render;
-  // Já estamos usando render acima; comportamento de rolagem será simples via CSS overflow do wrapper.
 
 })();
 </script>
